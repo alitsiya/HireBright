@@ -5,12 +5,11 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-
 class Recruter(db.Model):
     """Recruter table """
 
     __tablename__ = "recruters"
-    recruter_id = db.Column(db.Integer, primary_key=True)
+    recruter_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     first_name = db.Column(db.String(20), nullable=False)
     last_name = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(20), nullable=False)
@@ -27,12 +26,12 @@ class User(db.Model):
     """Candidate table """
 
     __tablename__ = "users"
-    user_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     first_name = db.Column(db.String(20), nullable=False)
     last_name = db.Column(db.String(20), nullable=False)
-    email = db.Column(db.String(20), nullable=False)
+    email = db.Column(db.String(30), nullable=False)
     phone = db.Column(db.String(30), nullable=False)
-    linkedin = db.Column(db.String(20))
+    linkedin = db.Column(db.String(60))
     github = db.Column(db.String(20))
 
     def __repr__(self):
@@ -40,46 +39,11 @@ class User(db.Model):
         return "<user_id=%s first_name=%s last_name=%s email=%s>" % (self.user_id, self.first_name, 
                                                             self.last_name, self.email)
 
-
-class Interview(db.Model):
-    """Interview process table """
-
-    __tablename__ = "interviews"
-    interview_id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, nullable=False)
-    recruter_id = db.Column(db.Integer)
-    status_id = db.Column(db.String(50), nullable=False)
-    link_id = db.Column(db.Integer)
-    interview_date = db.Column(db.DateTime)
-
-    def __repr__(self):
-        """Show interview process's info"""
-        return "<interview_id=%s user_id=%s status_id=%s link_id=%s>" % (self.interview_id, self.user_id, 
-                                                            self.status_id, self.link_id)
-
-
-class Submission(db.Model):
-    """Info about submission table """
-
-    __tablename__ = "submissions"
-    sub_id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, nullable=False)
-    position_id = db.Column(db.String(20))
-    salary = db.Column(db.Integer)
-    resume_id = db.Column(db.Integer, nullable=False)
-    time_of_submission = db.Column(db.DateTime, nullable=False)
-
-    def __repr__(self):
-        """Show submission's info"""
-        return "<sub_id=%s user_id=%s position_id=%s resume_id=%s>" % (self.sub_id, self.user_id, 
-                                                            self.position_id, self.resume_id)
-
-
 class Resume(db.Model):
     """Resume table"""
 
     __tablename__ = "resumes"
-    resume_id = db.Column(db.Integer, primary_key=True)
+    resume_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     resume_text = db.Column(db.String(100000), nullable=False)
 
     def __repr__(self):
@@ -91,7 +55,7 @@ class Tool(db.Model):
     """Pair-programming tool table"""
 
     __tablename__ = "tools"
-    link_id  = db.Column(db.Integer, primary_key=True)
+    link_id  = db.Column(db.Integer, autoincrement=True, primary_key=True)
     link = db.Column(db.String(10), nullable=False)
     content = db.Column(db.String(100000))
 
@@ -104,7 +68,7 @@ class Position(db.Model):
     """List of positions table"""
 
     __tablename__ = "positions"
-    pos_id = db.Column(db.Integer, primary_key=True)
+    pos_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     position_name = db.Column(db.String(50), nullable=False)
 
     def __repr__(self):
@@ -116,7 +80,7 @@ class Status(db.Model):
     """List of interview statuses table"""
 
     __tablename__ = "statuses"
-    status_id = db.Column(db.Integer, primary_key=True)
+    status_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     status_name = db.Column(db.String(50), nullable=False)
 
     def __repr__(self):
@@ -124,19 +88,47 @@ class Status(db.Model):
         return "<status_id=%s status_name=%s>" % (self.status_id, self.status_name)
 
 
+class Interview(db.Model):
+    """Interview process table """
+
+    __tablename__ = "interviews"
+    interview_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    recruter_id = db.Column(db.Integer, db.ForeignKey('recruters.recruter_id'))
+    status_id = db.Column(db.Integer, db.ForeignKey('statuses.status_id'), nullable=False)
+    link_id = db.Column(db.Integer, db.ForeignKey('tools.link_id'))
+    interview_date = db.Column(db.DateTime)
+
+    user = db.relationship('User', backref=db.backref("interview", order_by=user_id))
+    recruter = db.relationship('Recruter', backref=db.backref("interview", order_by=recruter_id))
+    status = db.relationship('Status', backref=db.backref("interview", order_by=status_id))
+    tool = db.relationship('Tool', backref=db.backref("interview", order_by=link_id))
+
+    def __repr__(self):
+        """Show interview process's info"""
+        return "<interview_id=%s user_id=%s status_id=%s link_id=%s>" % (self.interview_id, self.user_id, 
+                                                            self.status_id, self.link_id)
 
 
-    # id = db.Column(db.Integer, primary_key=True)
-    # year = db.Column(db.Integer, nullable=False)
-    # brand_name = db.Column(db.String(50), db.ForeignKey('brands.name'), nullable=True)
-    # name = db.Column(db.String(50), nullable=False)
+class Submission(db.Model):
+    """Info about submission table """
 
-    # brand = db.relationship('Brand', backref=db.backref("model", order_by=id))
+    __tablename__ = "submissions"
+    sub_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    position_id = db.Column(db.Integer, db.ForeignKey('positions.pos_id'), nullable=True)
+    salary = db.Column(db.Integer)
+    resume_id = db.Column(db.Integer, db.ForeignKey('resumes.resume_id'), nullable=False)
+    time_of_submission = db.Column(db.DateTime, nullable=False)
 
-    # def __repr__(self):
-    #     """Show model's info"""
-    #     return "<model's id=%s year=%s brand_name=%s name=%s>" % (self.id, self.year, 
-    #                                                         self.brand_name, self.name)
+    user = db.relationship('User', backref=db.backref("submission", order_by=user_id))
+    position = db.relationship('Position', backref=db.backref("submission", order_by=position_id))
+    resume = db.relationship('Resume', backref=db.backref("submission", order_by=sub_id))
+
+    def __repr__(self):
+        """Show submission's info"""
+        return "<sub_id=%s user_id=%s position_id=%s resume_id=%s>" % (self.sub_id, self.user_id, 
+                                                            self.position_id, self.resume_id)
 
 
 
