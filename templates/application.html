@@ -1,0 +1,42 @@
+{% extends 'base.html' %} {% block title %} Submit your application {% endblock %} {% block content %}
+
+<form action="submitapplication" method="POST">
+    <label>First Name
+        <input type="text" name="first_name">
+    </label>
+    <br>
+    <label>Last Name
+        <input type="text" name="first_name">
+    </label>
+    <br>
+    <label>Email
+        <input type="email" name="email">
+    </label>
+    <br>
+    <label>Phone number
+        <input type="text" name="secretkey">
+    </label>
+    <br>
+    <label>Linkedin
+        <input type="text" name="linkedin">
+    </label>
+    <br>
+    <label>Github login
+        <input type="text" name="github">
+    </label>
+    <br>
+    <label>Desired position
+        <input type="text" name="position">
+    </label>
+    <br>
+    <label>Salary
+        <input type="text" name="salary">
+    </label>
+    <br>
+    <label>Attach resume:
+        <input type="file" name="attachedfile" maxlength=50 allow="text/*">
+    </label>
+    <br>
+    <input type="submit">
+</form>
+{% endblock %}

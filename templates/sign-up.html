@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %} Sign Up{% endblock %}
+{% block content %}
+
+    <h2>Sign Up</h2>
+    <p>Are you an HR? Then sign up here using you secret key:</p><br>
+   <form action="/sign-up" method="POST">
+    <label>Username
+      <input type="email" name="email"> *
+    </label><br>
+    <label>Password
+      <input type="password" name="password"> *
+    </label><br>
+    <label>Secret key
+      <input type="text" name="secretkey"> 
+    </label><br>
+    <input type="submit" value="Submit">
+  </form>
+  <br>
+  <p>If you are applicant, submit your application here and we'll contact you!</p>
+{% endblock %}
