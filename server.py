@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, request, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
 
-from model import User, Rating, Movie, connect_to_db, db
+from model import connect_to_db, db
 
 app = Flask(__name__)
 
@@ -14,12 +14,19 @@ def index():
     return render_template("homepage.html")
 
 
-@app.route('about')
+@app.route('/about')
 def about():
     """About page"""
 
     return render_template("about.html")
 
+
+@app.route('/interview')
+def interview():
+    """Render interview pair programming tool page"""
+
+    pass
+    
 
 @app.route('/signin', methods=['GET'])
 def render_sign_in():
