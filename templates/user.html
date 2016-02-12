@@ -1,7 +1,9 @@
-{% extends 'base.html' %} 
-{% block title %} Application status {% endblock %} 
+{% extends 'base.html' %}
+{% block title %} Candidate profile {% endblock %}
 {% block content %}
-<h2>Your application</h2>
+
+    <h2>Profile</h2>
+
 {% if user %}
 <label>First name: <div id="name">{{ user.first_name }}</div></label>&nbsp
 <label>Last Name: <div id='lname'>{{ user.last_name }}</div></label>&nbsp
@@ -17,4 +19,5 @@ Status: {{ user.interview }} <br>
 Resume: <br>{{ user.resume.resume_text }}
 
 {% endif %}
+
 {% endblock %}

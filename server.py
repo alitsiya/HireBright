@@ -8,6 +8,7 @@ app = Flask(__name__)
 
 app.secret_key = 'Shhhhhhhhh'
 
+
 @app.route('/')
 def index():
     """Homepage"""
@@ -49,9 +50,9 @@ def sign_in():
             if existing_hr.password != password:
                 print "\n Incorrect password\n\n"
                 flash("Incorrect password")
-                
+
                 return redirect("/signin")
-            
+
             else:
                 print "\n Logged in - SUCCSESS!!!"
                 session['email'] = email
@@ -63,9 +64,9 @@ def sign_in():
             if existing_user.password != password:
                 print "\n Incorrect password\n\n"
                 flash("Incorrect password")
-                
+
                 return redirect("/signin")
-        
+
             else:
                 print "\n Logged in - SUCCSESS!!!"
                 session['email'] = email
@@ -130,9 +131,6 @@ def application_render():
 
     return render_template('application.html')
 
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 @app.route('/submit-application', methods=["POST"])
 def application_submit():
@@ -150,31 +148,37 @@ def application_submit():
     github = request.form.get('github')
     position = request.form.get('position')
     salary = request.form.get('salary')
-
     text_file = request.files['file']
 
+    #check if user already exists
+    existing_user = User.query.filter(email == email).first()
+    if existing_user:
+        flash("User with that email already exists, use sign-in page to edit your application.")
+        return redirect('/signin')
+
+    #checks if there is an attached file
     if not text_file:
-        flash('Some problems with a file')
+        flash('Some problems with your attachment')
         return redirect('/submit-application')
 
-    #str for display
-    file_contents = text_file.stream.read().decode("utf-8") 
+    #resume for display
+    file_contents = text_file.stream.read().decode("utf-8")
     file_contents = file_contents.replace(u'\u2019', u'\'').encode('ascii', 'ignore')
     print type(file_contents)
-    #str type for search
-    resume_text = file_contents.translate(None, string.punctuation) #file for search
+    #resume type for search
+    resume_text = file_contents.translate(None, string.punctuation)
     resume_text = resume_text.strip().lower().replace('\n', ' ')
-    
+
+    #creating resume object
     resume = Resume(
                     resume_text=file_contents,
                     resume_string=resume_text,
-                    )
+                   )
     db.session.add(resume)
     print "\n Resume Added to Database \n"
     db.session.flush()
-    print 'WHHOOOOOOOOOOOO id', resume.resume_id
     db.session.commit()
-
+    #creating user object
     user = User(
                     first_name=first_name,
                     last_name=last_name,
@@ -190,34 +194,49 @@ def application_submit():
     db.session.add(user)
     print "\n User Added to Database \n"
     db.session.flush()
-    print "UUUUUUSEeEEEEEER user.user_id", user.user_id
-
+    #creating interview object with status_id 'New'
     status_name = Status.query.filter(Status.status_name == 'New').one()
     interview = Interview (
                         user_id=user.user_id,
                         status_id=status_name.status_id) 
     db.session.add(interview)
     print "\n Interview Added to Database \n"
-    flash("%s, thank you for applying! You can review your information on status page", first_name)
+    flash("%s, thank you for applying! You can review your information on status page", user.first_name)
     db.session.commit()
 
     text_file.close()
     return redirect('/')
 
 
-@app.route('/status')
+@app.route('/view-status')
 def render_view_status():
     """Renders view status page when user signed in"""
+    if session:
+        email = session['email']
+        user = User.query.filter(email == email).first()
+        print user.interview
+    else:
+        flash("You are not logged in")
+        return redirect("/")
 
-    
-    return render_template("status.html")
+    return render_template("status.html", user=user)
 
 
 @app.route('/data')
 def render_data():
     """Renders data page when recruter signed in"""
+    users = User.query.all()
 
-    return render_template("data.html")
+    return render_template("data.html", users=users)
+
+
+@app.route('/users/<int:user_id>')
+def show_user_data(user_id):
+    """Shows data for particular user """
+
+    user = User.query.get(user_id)
+
+    return render_template("user.html", user=user)
 
 
 if __name__ == "__main__":

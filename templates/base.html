@@ -5,6 +5,7 @@
     <link href="style.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>HireBright - {% block title %}HR tool for interviewing Software Engineers{% endblock %}</title>
+  <script src="https://code.jquery.com/jquery-2.1.1.js"></script>
 </head>
 
 <body>
@@ -42,16 +43,18 @@
 
 
 <div class="container">
-    <ul>
+    <ul id="flash">
     {% for message in get_flashed_messages() %}
       <li>{{ message }}</li>
     {% endfor %}
     </ul>
 
   <a href="/submit-application">Submit Application</a><br>
-  <a href="/status">Application Status</a><br>
+  <a href="/view-status">Application Status</a><br>
   {% block content %} put your content here {% endblock %}
 </div>
-
+<script type="text/javascript">
+  setTimeout(function(){$('#flash').text('')}, 2000)
+</script>
 </body>
 </html>

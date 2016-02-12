@@ -38,6 +38,7 @@ class User(db.Model):
     linkedin = db.Column(db.String(60))
     github = db.Column(db.String(20))
     position = db.Column(db.String(30))
+    salary = db.Column(db.Integer)
     resume_id = db.Column(db.Integer, db.ForeignKey('resumes.resume_id'))
 
     resume = db.relationship('Resume', backref=db.backref("user", order_by=resume_id))
