@@ -1,0 +1,78 @@
+JAY SMITH
+71 Fifth Ave.
+Sometown, NY 11597
+555.555.5555
+js@somedomain.com   SENIOR PROGRAMMER
+ 
+
+    Results-driven lead programmer offering extensive experience within both Fortune 500 and startup environments. SCJP and SCJD certified.
+    Able to incorporate user needs into cost-effective, secure and user-friendly solutions known for scalability and durability.
+    Innovator of next-generation solutions, systems and applications fueling major improvements to the bottom line.
+    Proven leader and project manager; drive system architecture decisions and lead projects from concept through the release process.
+
+ 
+Technology
+Summary     
+Languages/Programming: Java, J2EE, C, C++, Perl, PHP, VB.Net, SQL Server, ASP.Net, HTML, XML, SAP, ActiveX
+
+Systems: AIX, Linux, Unix (Solaris/HP-UX), Windows XP/NT v4.0
+
+Networking: TCP/IP, SFTP, FTP
+
+Databases: DB2, Oracle 8/7, Informix, MS Access
+ 
+Professional
+Experience  ABC COMPANY -- Sometown, NY
+Lead Programmer, 2009 to Present
+
+Develop, maintain and support application programs for administrative, Web and mobile systems using Java and related tools. Analyze code for system testing and debugging; create test transactions to find, isolate and rectify issues; and manage a team of three programmers. Accomplishments:
+
+    Reengineered multiple systems that fueled improvements to productivity, efficiency, uptime and accuracy for global business operations. Developed code, system design and test/QA plans for all solutions and often coordinated the national or international rollout.
+    Led, architected and participated in the design, testing and deployment of client/server, multitier applications, ActiveX and related components.
+    Developed new procedures for requirements gathering, needs analysis, testing, scripting and documentation to strengthen quality and functionality of business-critical applications.
+    Developed large-scale, portable, thread-safe and ultra-high performance foundation and application infrastructure libraries.
+    Trained and mentored junior programmers in programming methodologies and best practices.
+    Delivered back-office tools supporting ecommerce initiatives, enabling company to compete more effectively in the marketplace through search-engine optimization.
+    Served as a core group member in defining and prioritizing technology investments for the next two years, ensuring the alignment of process, technology and business objectives.
+
+XYZ.COM -- Sometown, NJ
+Lead Programmer, 2002 to 2008
+
+Led programming tasks including enhancements, maintenance and support for clients’ applications and interfaces. Engineered software products, handling complex analysis and intricate programming to meet project requirements. Accomplishments:
+
+    Led solutions engineering that involved process automation, macro conversion and functionality enhancement. Replaced time-consuming, error-prone manual processes with elegant, automated solutions.
+    Developed and implemented cross-platform, Java-based POS system. Completed project under budget and three weeks ahead of deadline.
+    Coded new solutions that increased availability and scalability by 45% and 75%, respectively.
+
+DEF COMPANY -- Sometown, NJ
+Programmer II / Programmer I, 2000 to 2002
+Help Desk Analyst, 1998 to 2000
+
+Progressed through promotions, culminating in responsibility for Web-based application programming within high-volume setting. Became adept in analyzing code for system testing and debugging.
+ 
+Education &
+Credentials     ABC UNIVERSITY -- Sometown, NY
+MS in Software Engineering Candidate, 2010 to Present
+Current GPA: 3.8 | Expected Graduation: 2012
+
+DEF UNIVERSITY -- Sometown, NJ
+BS in Computer Information Science, 1998
+
+Certifications:
+
+    Sun Certified Java Programmer (SCJP), 2007 
+    Sun Certified Java Developer (SCJD), 2008
+
+Recent Seminars:
+
+    Enterprise Java Development
+    C++ Programming: Concepts, Design and Implementation
+    Windows Programming Using Visual C++
+    Advanced Workshop in Object-Oriented Analysis and Design
+    Project Lifecycle and Project Management Master Class
+    Project Management Methods
+
+Volunteerism    Little League Coach (Sometown, NY), 2009 to Present
+PTA Secretary (Sometown Elementary School), 2010 to Present
+Active Volunteer, Special Olympics, 2008 to Present
+  Available for Relocation  

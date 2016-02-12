@@ -5,6 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+
 class Recruter(db.Model):
     """Recruter table """
 
@@ -12,14 +13,15 @@ class Recruter(db.Model):
     recruter_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     first_name = db.Column(db.String(20), nullable=False)
     last_name = db.Column(db.String(20), nullable=False)
+    password = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(20), nullable=False)
     title = db.Column(db.String(30))
     phone = db.Column(db.String(30))
 
     def __repr__(self):
         """Show recruter's info"""
-        return "<recruter_id=%s first_name=%s last_name=%s title=%s>" % (self.recruter_id, self.first_name, 
-                                                            self.last_name, self.title)
+        return "<recruter_id=%s first_name=%s last_name=%s title=%s>" % (self.recruter_id, self.first_name,
+                                                                         self.last_name, self.title)
 
 
 class User(db.Model):
@@ -29,15 +31,22 @@ class User(db.Model):
     user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     first_name = db.Column(db.String(20), nullable=False)
     last_name = db.Column(db.String(20), nullable=False)
+    password = db.Column(db.String(20), nullable=False)
+    location = db.Column(db.String(50))
     email = db.Column(db.String(30), nullable=False)
     phone = db.Column(db.String(30), nullable=False)
     linkedin = db.Column(db.String(60))
     github = db.Column(db.String(20))
+    position = db.Column(db.String(30))
+    resume_id = db.Column(db.Integer, db.ForeignKey('resumes.resume_id'))
+
+    resume = db.relationship('Resume', backref=db.backref("user", order_by=resume_id))
 
     def __repr__(self):
         """Show candidate's info"""
-        return "<user_id=%s first_name=%s last_name=%s email=%s>" % (self.user_id, self.first_name, 
-                                                            self.last_name, self.email)
+        return "<user_id=%s first_name=%s last_name=%s email=%s>" % (self.user_id, self.first_name,
+                                                                     self.last_name, self.email)
+
 
 class Resume(db.Model):
     """Resume table"""
@@ -45,6 +54,7 @@ class Resume(db.Model):
     __tablename__ = "resumes"
     resume_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     resume_text = db.Column(db.String(100000), nullable=False)
+    resume_string = db.Column(db.String(100000), nullable=False)
 
     def __repr__(self):
         """Show resume's info"""
@@ -55,7 +65,7 @@ class Tool(db.Model):
     """Pair-programming tool table"""
 
     __tablename__ = "tools"
-    link_id  = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    link_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     link = db.Column(db.String(10), nullable=False)
     content = db.Column(db.String(100000))
 
@@ -64,16 +74,16 @@ class Tool(db.Model):
         return "<link_id=%s link=%s>" % (self.link_id, self.link)
 
 
-class Position(db.Model):
+class Opening(db.Model):
     """List of positions table"""
 
-    __tablename__ = "positions"
-    pos_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    position_name = db.Column(db.String(50), nullable=False)
+    __tablename__ = "openings"
+    opening_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    opening_name = db.Column(db.String(50), nullable=False)
 
     def __repr__(self):
-        """Show position's info"""
-        return "<pos_id=%s position_name=%s>" % (self.pos_id, self.position_name)
+        """Show opening's info"""
+        return "<pos_id=%s vacancy_name=%s>" % (self.opening_id, self.opening_name)
 
 
 class Status(db.Model):
@@ -106,8 +116,8 @@ class Interview(db.Model):
 
     def __repr__(self):
         """Show interview process's info"""
-        return "<interview_id=%s user_id=%s status_id=%s link_id=%s>" % (self.interview_id, self.user_id, 
-                                                            self.status_id, self.link_id)
+        return "<interview_id=%s user_id=%s status_id=%s link_id=%s>" % (self.interview_id, self.user_id,
+                                                                         self.status_id, self.link_id)
 
 
 class Submission(db.Model):
@@ -116,20 +126,19 @@ class Submission(db.Model):
     __tablename__ = "submissions"
     sub_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
-    position_id = db.Column(db.Integer, db.ForeignKey('positions.pos_id'), nullable=True)
+    position_id = db.Column(db.Integer, db.ForeignKey('openings.opening_id'), nullable=True)
     salary = db.Column(db.Integer)
     resume_id = db.Column(db.Integer, db.ForeignKey('resumes.resume_id'), nullable=False)
     time_of_submission = db.Column(db.DateTime, nullable=False)
 
     user = db.relationship('User', backref=db.backref("submission", order_by=user_id))
-    position = db.relationship('Position', backref=db.backref("submission", order_by=position_id))
+    opening = db.relationship('Opening', backref=db.backref("submission", order_by=position_id))
     resume = db.relationship('Resume', backref=db.backref("submission", order_by=sub_id))
 
     def __repr__(self):
         """Show submission's info"""
-        return "<sub_id=%s user_id=%s position_id=%s resume_id=%s>" % (self.sub_id, self.user_id, 
-                                                            self.position_id, self.resume_id)
-
+        return "<sub_id=%s user_id=%s position_id=%s resume_id=%s>" % (self.sub_id, self.user_id,
+                                                                       self.position_id, self.resume_id)
 
 
 def connect_to_db(app):
@@ -147,4 +156,4 @@ if __name__ == "__main__":
     app = Flask(__name__)
 
     connect_to_db(app)
-    print "Connected to DB."
+    print "Connected to DB on //localhost:5000."

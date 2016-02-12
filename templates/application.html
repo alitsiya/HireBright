@@ -1,20 +1,28 @@
 {% extends 'base.html' %} {% block title %} Submit your application {% endblock %} {% block content %}
 
-<form action="submitapplication" method="POST">
+<form action="submit-application" method="POST" enctype="multipart/form-data">
     <label>First Name
-        <input type="text" name="first_name">
+        <input type="text" name="first_name"> *
     </label>
     <br>
     <label>Last Name
-        <input type="text" name="first_name">
+        <input type="text" name="last_name"> *
     </label>
     <br>
     <label>Email
-        <input type="email" name="email">
+        <input type="email" name="email"> *
+    </label>
+    <br>
+    <label>PAssword
+        <input type="password" name="password"> *
     </label>
     <br>
     <label>Phone number
-        <input type="text" name="secretkey">
+        <input type="text" name="phone"> *
+    </label>
+        <br>
+    <label>Location
+        <input type="text" name="location">
     </label>
     <br>
     <label>Linkedin
@@ -34,9 +42,10 @@
     </label>
     <br>
     <label>Attach resume:
-        <input type="file" name="attachedfile" maxlength=50 allow="text/*">
+        <input type="file" name="file">
     </label>
     <br>
     <input type="submit" value="Submit">
 </form>
+
 {% endblock %}

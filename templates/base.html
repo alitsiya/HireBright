@@ -23,7 +23,7 @@
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
-        <li><a href="#">About</a></li>
+        <li><a href="/#about">About</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         {% if session %}
@@ -48,7 +48,8 @@
     {% endfor %}
     </ul>
 
-
+  <a href="/submit-application">Submit Application</a><br>
+  <a href="/status">Application Status</a><br>
   {% block content %} put your content here {% endblock %}
 </div>
 
