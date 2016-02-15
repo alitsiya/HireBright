@@ -1,8 +1,27 @@
 import string
+from gevent import monkey; monkey.patch_all()
 from flask import Flask, render_template, redirect, request, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
 
 from model import Recruter, User, Resume, Tool, Opening, Status, Interview, connect_to_db, db
+
+from socketio import socketio_manage
+from socketio.namespace import BaseNamespace
+from socketio.mixins import RoomsMixin, BroadcastMixin
+
+# The socket.io namespace
+class ChatNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
+    def on_nickname(self, nickname):
+        self.environ.setdefault('nicknames', []).append(nickname)
+        self.socket.session['nickname'] = nickname
+        self.broadcast_event('announcement', '%s has connected' % nickname)
+        self.broadcast_event('nicknames', self.environ['nicknames'])
+        # Just have them join a default-named room
+        self.join('main_room')
+
+    def on_user_message(self, msg):
+        self.emit_to_room('main_room', 'msg_to_room', self.socket.session['nickname'], msg)
+
 
 app = Flask(__name__)
 
@@ -241,14 +260,40 @@ def show_user_data(user_id):
     return render_template("user.html", user=user)
 
 
+@app.route('/tool')
+def render_tool():
+    """Renders pair programming tool"""
+
+    return render_template('tool.html')
+
+
+@app.route("/socket.io/<path:path>")
+def run_socketio(path):
+    socketio_manage(request.environ, {'': ChatNamespace})
+
+
 if __name__ == "__main__":
+
     # We have to set debug=True here, since it has to be True at the point
     # that we invoke the DebugToolbarExtension
-    app.debug = True
-
-    # Use the DebugToolbar
+    # app.debug = True
     DebugToolbarExtension(app)
 
     connect_to_db(app)
 
-    app.run()
+    # app.run()
+
+    print 'Listening on http://localhost:5000'
+    app.debug = True
+    import os
+    from werkzeug.wsgi import SharedDataMiddleware
+    application = SharedDataMiddleware(app, {
+        '/': os.path.join(os.path.dirname(__file__), 'static')
+        })
+    from socketio.server import SocketIOServer
+    SocketIOServer(('0.0.0.0', 5000), app,
+        resource="socket.io", policy_server=False).serve_forever()
+
+    # Use the DebugToolbar
+
+
