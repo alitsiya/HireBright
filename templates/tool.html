@@ -2,6 +2,9 @@
 <html>
   <head>
     <!-- <link href="stylesheets/style.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js"></script>
+
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.6.1.min.js">
     </script><script type="text/javascript" src="socket.io.js"></script>
     <script>    
@@ -61,10 +64,12 @@ $(function () {
     });
 
     $('#tool').keyup( function () {
-      // message('me', $('#tool').val());
       socket.emit('user message', $('#tool').html());
       $('#lines').get(0).scrollTop = 10000000;
       return false;
+      // hljs.initHighlighting.called = false;
+      // hljs.initHighlighting(); didn't work
+
     });
 
     function clear () {
@@ -72,6 +77,15 @@ $(function () {
     };
 });
     </script>
+
+    <script>hljs.initHighlightingOnLoad();
+$(document).ready(function() {
+   $('#tool').each(function(i, e) {hljs.highlightBlock(e)});
+});
+
+    </script>
+  
+
   </head>
 <body>
   <div id="chat">
@@ -91,8 +105,14 @@ $(function () {
     </div>
     
   </div>
-<!--   <div> -->
-    <div  id="tool" name="tool" contentEditable="true"></div>
-<!--   </div> -->
+<pre><code class="python">
+    <div  id="tool" name="tool" contentEditable="true">def test_highlight(a, b):<br>
+        import random
+        for i in range(10):
+            print "This should increment i", i
+        sum = a + b
+        return "This should highlight syntax"
+    </div>
+</code></pre>
 </body>
 </html>
