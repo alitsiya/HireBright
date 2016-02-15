@@ -64,12 +64,11 @@ $(function () {
     });
 
     $('#tool').keyup( function () {
+      // message('me', $('#tool').val());
       socket.emit('user message', $('#tool').html());
       $('#lines').get(0).scrollTop = 10000000;
       return false;
-      // hljs.initHighlighting.called = false;
-      // hljs.initHighlighting(); didn't work
-
+      
     });
 
     function clear () {
@@ -78,13 +77,8 @@ $(function () {
 });
     </script>
 
-    <script>hljs.initHighlightingOnLoad();
-$(document).ready(function() {
-   $('#tool').each(function(i, e) {hljs.highlightBlock(e)});
-});
+    <script>hljs.initHighlightingOnLoad();</script>
 
-    </script>
-  
 
   </head>
 <body>
