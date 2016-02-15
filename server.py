@@ -2,7 +2,7 @@ import string
 from flask import Flask, render_template, redirect, request, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
 
-from model import Recruter, User, Resume, Tool, Opening, Status, Interview, Submission, connect_to_db, db
+from model import Recruter, User, Resume, Tool, Opening, Status, Interview, connect_to_db, db
 
 app = Flask(__name__)
 
@@ -190,6 +190,7 @@ def application_submit():
                     linkedin=linkedin,
                     github=github,
                     resume_id=resume.resume_id,
+                    salary=salary,
                     )
     db.session.add(user)
     print "\n User Added to Database \n"
@@ -214,12 +215,13 @@ def render_view_status():
     if session:
         email = session['email']
         user = User.query.filter(email == email).first()
+        interview = Interview.query.filter(Interview.user_id==user.user_id).first()
         print user.interview
     else:
         flash("You are not logged in")
         return redirect("/")
 
-    return render_template("status.html", user=user)
+    return render_template("status.html", user=user, interview=interview)
 
 
 @app.route('/data')

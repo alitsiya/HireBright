@@ -1,7 +1,7 @@
 """Models and database functions for Interviewer project."""
 
 from flask_sqlalchemy import SQLAlchemy
-
+from datetime import datetime
 
 db = SQLAlchemy()
 
@@ -40,6 +40,7 @@ class User(db.Model):
     position = db.Column(db.String(30))
     salary = db.Column(db.Integer)
     resume_id = db.Column(db.Integer, db.ForeignKey('resumes.resume_id'))
+    time_of_submission = db.Column(db.DateTime, default=datetime.now, nullable=False)
 
     resume = db.relationship('Resume', backref=db.backref("user", order_by=resume_id))
 
@@ -121,25 +122,25 @@ class Interview(db.Model):
                                                                          self.status_id, self.link_id)
 
 
-class Submission(db.Model):
-    """Info about submission table """
+# class Submission(db.Model):
+#     """Info about submission table """
 
-    __tablename__ = "submissions"
-    sub_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
-    position_id = db.Column(db.Integer, db.ForeignKey('openings.opening_id'), nullable=True)
-    salary = db.Column(db.Integer)
-    resume_id = db.Column(db.Integer, db.ForeignKey('resumes.resume_id'), nullable=False)
-    time_of_submission = db.Column(db.DateTime, nullable=False)
+#     __tablename__ = "submissions"
+#     sub_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+#     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+#     position_id = db.Column(db.Integer, db.ForeignKey('openings.opening_id'), nullable=True)
+#     salary = db.Column(db.Integer)
+#     resume_id = db.Column(db.Integer, db.ForeignKey('resumes.resume_id'), nullable=False)
+#     time_of_submission = db.Column(db.DateTime, nullable=False)
 
-    user = db.relationship('User', backref=db.backref("submission", order_by=user_id))
-    opening = db.relationship('Opening', backref=db.backref("submission", order_by=position_id))
-    resume = db.relationship('Resume', backref=db.backref("submission", order_by=sub_id))
+#     user = db.relationship('User', backref=db.backref("submission", order_by=user_id))
+#     opening = db.relationship('Opening', backref=db.backref("submission", order_by=position_id))
+#     resume = db.relationship('Resume', backref=db.backref("submission", order_by=sub_id))
 
-    def __repr__(self):
-        """Show submission's info"""
-        return "<sub_id=%s user_id=%s position_id=%s resume_id=%s>" % (self.sub_id, self.user_id,
-                                                                       self.position_id, self.resume_id)
+#     def __repr__(self):
+#         """Show submission's info"""
+#         return "<sub_id=%s user_id=%s position_id=%s resume_id=%s>" % (self.sub_id, self.user_id,
+#                                                                        self.position_id, self.resume_id)
 
 
 def connect_to_db(app):
