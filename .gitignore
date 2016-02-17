@@ -2,4 +2,4 @@ env/
 .DS_Store
 *.pyc
 /files
-flask-gevent-socketio-chat-master/
+secrets.sh

@@ -36,7 +36,7 @@
             {% if interview.interview_date %} Interview date: Interviewer: Link to tool: {% else %} Schedule interview
             <br> Choose Interviewer:
             <form id="interview-data-form" action="" method="POST">
-                <select name="interviewers">
+                <select name="interviewers" id="interviewers">
                     {% for recruiter in recruiters %}
                     <option value="{{ recruiter.recruiter_id}}">{{ recruiter.first_name }} {{ recruiter.last_name }}</option>
                     {% endfor %}
@@ -45,6 +45,12 @@
                 <br>
                 <p>Date:
                     <input type="text" id="calendar" />
+                    Time:
+                   <select name="interview_hour" id="interview_hour"> 
+                     <option value="10">10:00am</option>
+                     <option value="12">12:00pm</option>
+                     <option value="14">2:00pm</option>
+                   </select>
                 </p>
                 <br>
                 <input type="submit">
@@ -58,26 +64,41 @@
     </div>
 </div>
 {% endif %}
+
 <script>
-function changeInterviewData(results) {
+function changeInterviewData() {
 
     console.log("Finished updateInterview");
 }
 
 function updateInterview(evt) {
     evt.preventDefault();
-    var recr_id = $("select option:selected").val()
+    var recr_id = $("#interviewers option:selected").val()
     var date = $('#calendar').val()
+    var time = $("#interview_hour option:selected").val()
+    var email = $('#email').text()
     var data = {
         'interview_date': date,
-        'recrcuiter_id': recr_id
+        'recrcuiter_id': recr_id,
+        'user_email': email,
+        'interview_hour': time,
     }
-    $.post('/schedule_interview', data, changeInterviewData);
-    console.log(recr_id, date, data)
+    $.ajax({
+        type : "POST",
+        url : '/schedule_interview',
+        data: JSON.stringify(data, null, '\t'),
+        contentType: 'application/json;charset=UTF-8',
+        success: function(result) {
+            console.log(result);
+        }
+    });
+
     console.log("Finished sending AJAX");
 }
 $("#interview-data-form").on("submit", updateInterview);
+
 </script>
+
 <script src="http://code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
 <script>
 $(function() {

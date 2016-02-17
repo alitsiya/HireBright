@@ -3,6 +3,8 @@ from gevent import monkey; monkey.patch_all()
 from flask import Flask, render_template, redirect, request, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
 
+from datetime import datetime
+
 from model import Recruiter, User, Resume, Tool, Opening, Status, Interview, connect_to_db, db
 
 from socketio import socketio_manage
@@ -261,9 +263,6 @@ def render_data():
         return redirect("/")
     
 
-    
-
-
 @app.route('/users/<int:user_id>')
 def show_user_data(user_id):
     """Shows data for particular user """
@@ -287,9 +286,32 @@ def show_user_data(user_id):
 
 @app.route('/schedule_interview', methods=["POST"])
 def put_interview_db():
-    """"""
+    """When on page users/<int> 'Schedule interview' form submitts it sends ajax call that 
+        updates user interview table in db.
+    """
+    date = request.json['interview_date']    #01/29/2016 format
+    time = request.json['interview_hour']    #10, 12, 14 format
+    recrcuiter_id = request.json['recrcuiter_id']
+    user_email = request.json['user_email']
+
+    #convert date and time to datetime object
+    date_object = datetime.strptime(date + ' ' + time, '%m/%d/%Y %H')
+
+    user = User.query.filter(User.email==user_email).first()
+
+    interview = Interview.query.filter(Interview.user_id==user.user_id).first()
+
+    status = Status.query.filter(Status.status_name=="Phone Interview").one()
+
+    interview.interview_date = date_object
+    interview.recruiter_id = recrcuiter_id
+    interview.status_id = status.status_id
+
+    db.session.add(interview)
+    db.session.commit()
+
     print '\n\n\nSuccesss!!!\n\n\n'
-    return "Success!"
+    return "Interview was scheduled successfully!"
 
 
 @app.route('/tool')
