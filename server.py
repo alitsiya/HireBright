@@ -3,7 +3,7 @@ from gevent import monkey; monkey.patch_all()
 from flask import Flask, render_template, redirect, request, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
 
-from model import Recruter, User, Resume, Tool, Opening, Status, Interview, connect_to_db, db
+from model import Recruiter, User, Resume, Tool, Opening, Status, Interview, connect_to_db, db
 
 from socketio import socketio_manage
 from socketio.namespace import BaseNamespace
@@ -58,7 +58,7 @@ def sign_in():
 
     # if user exist - log in and redirect to homepage
     existing_user = User.query.filter_by(email=email).first()
-    existing_hr = Recruter.query.filter_by(email=email).first()
+    existing_hr = Recruiter.query.filter_by(email=email).first()
 
     if not existing_hr and not existing_user:
     # if hr doesn't exist - add user to db  and redirect
@@ -114,7 +114,7 @@ def sign_up():
     secretkey = request.form.get('secretkey')
 
     if secretkey == 'secret':
-        recruter = Recruter(
+        recruiter = Recruiter(
                     first_name=first_name,
                     last_name=last_name,
                     email=email,
@@ -122,9 +122,9 @@ def sign_up():
                     title=title,
                     phone=phone,
                     )
-        db.session.add(recruter)
+        db.session.add(recruiter)
         db.session.commit()
-        print "\n Recruter Added to Database \n"
+        print "\n Recruiter Added to Database \n"
         session['email'] = email
         flash("%s %s has been signed up" % (first_name, last_name))
         return redirect("/data")
@@ -245,19 +245,49 @@ def render_view_status():
 
 @app.route('/data')
 def render_data():
-    """Renders data page when recruter signed in"""
-    users = User.query.all()
+    """Renders data page when recruiter signed in"""
 
-    return render_template("data.html", users=users)
+    if session:
+        email = session['email']
+        recruiter = Recruiter.query.filter(email == email).first()
+        if recruiter:
+            users = User.query.all()
+            return render_template("data.html", users=users)
+        else:
+            flash("You don't have permissions to view a content")
+            return redirect("/")
+    else:
+        flash("You are not logged in")
+        return redirect("/")
+    
+
+    
 
 
 @app.route('/users/<int:user_id>')
 def show_user_data(user_id):
     """Shows data for particular user """
 
-    user = User.query.get(user_id)
+    if session:
+        email = session['email']
+        recruiter = Recruiter.query.filter(email == email).first()
+        if recruiter:
+            user = User.query.get(user_id)
+            interview = Interview.query.filter(Interview.user_id==user.user_id).first()
+            recruiters = Recruiter.query.all()
+            print recruiters
+            return render_template("user.html", user=user, interview=interview, recruiters=recruiters)
+        else:
+            flash("You don't have permissions to view a content")
+            return redirect("/")
+    else:
+        flash("You are not logged in")
+        return redirect("/")
+    
+@app.route('/schedule_interview')
+def put_interview_db(data):
 
-    return render_template("user.html", user=user)
+    pass
 
 
 @app.route('/tool')
@@ -287,7 +317,7 @@ if __name__ == "__main__":
     app.debug = True
     import os
     from werkzeug.wsgi import SharedDataMiddleware
-    application = SharedDataMiddleware(app, {
+    app = SharedDataMiddleware(app, {
         '/': os.path.join(os.path.dirname(__file__), 'static')
         })
     from socketio.server import SocketIOServer

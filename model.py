@@ -6,11 +6,11 @@ from datetime import datetime
 db = SQLAlchemy()
 
 
-class Recruter(db.Model):
-    """Recruter table """
+class Recruiter(db.Model):
+    """Recruiter table """
 
-    __tablename__ = "recruters"
-    recruter_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    __tablename__ = "recruiters"
+    recruiter_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     first_name = db.Column(db.String(20), nullable=False)
     last_name = db.Column(db.String(20), nullable=False)
     password = db.Column(db.String(20), nullable=False)
@@ -19,8 +19,8 @@ class Recruter(db.Model):
     phone = db.Column(db.String(30))
 
     def __repr__(self):
-        """Show recruter's info"""
-        return "<recruter_id=%s first_name=%s last_name=%s title=%s>" % (self.recruter_id, self.first_name,
+        """Show recruiter's info"""
+        return "<recruiter_id=%s first_name=%s last_name=%s title=%s>" % (self.recruiter_id, self.first_name,
                                                                          self.last_name, self.title)
 
 
@@ -106,13 +106,13 @@ class Interview(db.Model):
     __tablename__ = "interviews"
     interview_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
-    recruter_id = db.Column(db.Integer, db.ForeignKey('recruters.recruter_id'))
+    recruiter_id = db.Column(db.Integer, db.ForeignKey('recruiters.recruiter_id'))
     status_id = db.Column(db.Integer, db.ForeignKey('statuses.status_id'), nullable=False)
     link_id = db.Column(db.Integer, db.ForeignKey('tools.link_id'))
     interview_date = db.Column(db.DateTime)
 
     user = db.relationship('User', backref=db.backref("interview", order_by=user_id))
-    recruter = db.relationship('Recruter', backref=db.backref("interview", order_by=recruter_id))
+    recruiter = db.relationship('Recruiter', backref=db.backref("interview", order_by=recruiter_id))
     status = db.relationship('Status', backref=db.backref("interview", order_by=status_id))
     tool = db.relationship('Tool', backref=db.backref("interview", order_by=link_id))
 
