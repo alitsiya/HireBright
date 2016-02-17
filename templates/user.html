@@ -33,7 +33,8 @@
             <br> Status: {{ interview.status.status_name }}
             <br>
             <!-- This code shows interview status or calendar to schedule interview -->
-            {% if interview.interview_date %} Interview date: Interviewer: Link to tool: {% else %} Schedule interview
+            {% if interview.interview_date %} Interview date: Interviewer: 
+            Link to tool: {% else %} Schedule interview
             <br> Choose Interviewer:
             <form id="interview-data-form" action="" method="POST">
                 <select name="interviewers" id="interviewers">
@@ -56,8 +57,9 @@
                 <input type="submit">
             </form>
         </div>
+        {% endif %} 
         <div class="col-xs-12 col-md-8">
-            {% endif %} Resume:
+            Resume:
             <br>
             <div id="resume"> {{ user.resume.resume_text }}</div>
         </div>
