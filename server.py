@@ -283,11 +283,13 @@ def show_user_data(user_id):
     else:
         flash("You are not logged in")
         return redirect("/")
-    
-@app.route('/schedule_interview')
-def put_interview_db(data):
 
-    pass
+
+@app.route('/schedule_interview', methods=["POST"])
+def put_interview_db():
+    """"""
+    print '\n\n\nSuccesss!!!\n\n\n'
+    return "Success!"
 
 
 @app.route('/tool')

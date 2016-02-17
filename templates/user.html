@@ -1,69 +1,87 @@
-{% extends 'base.html' %}
-{% block title %} Candidate profile {% endblock %}
-{% block content %}
-
-    <h2>Profile</h2>
-
-{% if user %}
-<label>First name: <div id="name">{{ user.first_name }}</div></label>&nbsp
-<label>Last Name: <div id='lname'>{{ user.last_name }}</div></label>&nbsp
-<label>Email: <div id='email'>{{ user.email }}</div></label>&nbsp
-<label>Location: <div id='location'>{{ user.location }}</div></label>&nbsp
-<label>Phone number: <div id='phone'>{{ user.phone }}</div></label>&nbsp
-<label>Linkedin: <div id='linkedin'>{{ user.linkedin }}</div></label>&nbsp
-<label>Salary: <div id="salary">{{ user.salary }}</div></label>
-<label>Github: <div id='github'>{{ user.github }}</div></label>
-<label>Desired position: <div id='position'>{{ user.position }}</div></label>
-<br>
-Status: {{ interview.status.status_name }} <br>
-<!-- This code shows interview status or calendar to schedule interview -->
-{% if interview.interview_date %}
-Interview date:
-Interviewer:
-Link to tool: 
-
-{% else %}
-Schedule interview <br>
-
-Choose Interviewer: 
-<form action="" >
-  <select name="interviewers">
-    {% for recruiter in recruiters %}
-    <option value="{{ recruiter.recruiter_id}}">{{ recruiter.first_name }} {{ recruiter.last_name }}</option>
-    {% endfor %}
-  </select>
-
-  <br><br>
-    <p>Date: <input type="text" id="calendar" /></p><br>
-  <input type="submit">
-</form>
-{% endif %}
-Resume: <br> <div id="resume"> {{ user.resume.resume_text }}</div>
-
+{% extends 'base.html' %} {% block title %} Candidate profile {% endblock %} {% block content %}
+<h2>Profile</h2> {% if user %}
+<div class='container'>
+    <div class="row">
+        <div class="col-xs-12 col-md-4">
+            <label>First name:
+                <div id="name">{{ user.first_name }}</div>
+            </label>&nbsp
+            <label>Last Name:
+                <div id='lname'>{{ user.last_name }}</div>
+            </label>&nbsp
+            <label>Email:
+                <div id='email'>{{ user.email }}</div>
+            </label>&nbsp
+            <label>Location:
+                <div id='location'>{{ user.location }}</div>
+            </label>&nbsp
+            <label>Phone number:
+                <div id='phone'>{{ user.phone }}</div>
+            </label>&nbsp
+            <label>Linkedin:
+                <div id='linkedin'>{{ user.linkedin }}</div>
+            </label>&nbsp
+            <label>Salary:
+                <div id="salary">{{ user.salary }}</div>
+            </label>
+            <label>Github:
+                <div id='github'>{{ user.github }}</div>
+            </label>
+            <label>Desired position:
+                <div id='position'>{{ user.position }}</div>
+            </label>
+            <br> Status: {{ interview.status.status_name }}
+            <br>
+            <!-- This code shows interview status or calendar to schedule interview -->
+            {% if interview.interview_date %} Interview date: Interviewer: Link to tool: {% else %} Schedule interview
+            <br> Choose Interviewer:
+            <form id="interview-data-form" action="" method="POST">
+                <select name="interviewers">
+                    {% for recruiter in recruiters %}
+                    <option value="{{ recruiter.recruiter_id}}">{{ recruiter.first_name }} {{ recruiter.last_name }}</option>
+                    {% endfor %}
+                </select>
+                <br>
+                <br>
+                <p>Date:
+                    <input type="text" id="calendar" />
+                </p>
+                <br>
+                <input type="submit">
+            </form>
+        </div>
+        <div class="col-xs-12 col-md-8">
+            {% endif %} Resume:
+            <br>
+            <div id="resume"> {{ user.resume.resume_text }}</div>
+        </div>
+    </div>
+</div>
 {% endif %}
 <script>
 function changeInterviewData(results) {
-    var status = results;
 
-    console.log("Finished replaceStatus");
+    console.log("Finished updateInterview");
 }
 
 function updateInterview(evt) {
     evt.preventDefault();
-    var recr_id = $( "select option:selected" ).val()
+    var recr_id = $("select option:selected").val()
     var date = $('#calendar').val()
-    data = {'interview_date': date, 'recrcuiter_id': recr_id}
+    var data = {
+        'interview_date': date,
+        'recrcuiter_id': recr_id
+    }
     $.post('/schedule_interview', data, changeInterviewData);
-    console.log(recr_id, date)
+    console.log(recr_id, date, data)
     console.log("Finished sending AJAX");
 }
+$("#interview-data-form").on("submit", updateInterview);
 </script>
 <script src="http://code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
-
-<script>   
-    $(function() {
-         $( "#calendar" ).datepicker();   
-    }); 
+<script>
+$(function() {
+    $("#calendar").datepicker();
+});
 </script>
-
 {% endblock %}
