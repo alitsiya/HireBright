@@ -1,9 +1,11 @@
 import string
+from datetime import datetime
+import os
 from gevent import monkey; monkey.patch_all()
 from flask import Flask, render_template, redirect, request, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
 
-from datetime import datetime
+from twilio.rest import TwilioRestClient
 
 from model import Recruiter, User, Resume, Tool, Opening, Status, Interview, connect_to_db, db
 
@@ -310,6 +312,15 @@ def put_interview_db():
     db.session.add(interview)
     db.session.commit()
 
+    #send sms to user phone
+    account_sid = os.environ['TWILIO_ACCOUNT_SID']
+    auth_token = os.environ['TWILIO_AUTH_TOKEN']
+    client = TwilioRestClient(account_sid, auth_token)
+ 
+    message = client.messages.create(to="+14252143104", from_=os.environ['TWILIO_NUMBER'],
+                                     body="Your interview scheduled on %s " % (str(date_object)),
+                                     )
+    
     print '\n\n\nSuccesss!!!\n\n\n'
     return "Interview was scheduled successfully!"
 
