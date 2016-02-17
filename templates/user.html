@@ -1,40 +1,47 @@
 {% extends 'base.html' %} {% block title %} Candidate profile {% endblock %} {% block content %}
-<h2>Profile</h2> {% if user %}
+
+{% if user %}
 <div class='container'>
     <div class="row">
         <div class="col-xs-12 col-md-4">
-            <label>First name:
-                <div id="name">{{ user.first_name }}</div>
-            </label>&nbsp
-            <label>Last Name:
+        <h3>Profile</h3> 
+
+            First name:<div id="name">{{ user.first_name }}</div>
+        
+            Last Name:
                 <div id='lname'>{{ user.last_name }}</div>
-            </label>&nbsp
-            <label>Email:
+           
+            Email:
                 <div id='email'>{{ user.email }}</div>
-            </label>&nbsp
-            <label>Location:
+            
+            Location:
                 <div id='location'>{{ user.location }}</div>
-            </label>&nbsp
-            <label>Phone number:
+            
+            Phone number:
                 <div id='phone'>{{ user.phone }}</div>
-            </label>&nbsp
-            <label>Linkedin:
+            
+            Linkedin:
                 <div id='linkedin'>{{ user.linkedin }}</div>
-            </label>&nbsp
-            <label>Salary:
+            
+            Salary:
                 <div id="salary">{{ user.salary }}</div>
-            </label>
-            <label>Github:
+            
+            Github:
                 <div id='github'>{{ user.github }}</div>
-            </label>
-            <label>Desired position:
+            
+            Desired position:
                 <div id='position'>{{ user.position }}</div>
-            </label>
+            
             <br> Status: {{ interview.status.status_name }}
             <br>
             <!-- This code shows interview status or calendar to schedule interview -->
-            {% if interview.interview_date %} Interview date: Interviewer: 
-            Link to tool: {% else %} Schedule interview
+            {% if interview.interview_date %} Interview date: {{ interview.interview_date }}
+            
+            Interviewer: {{ interview.recruiter.first_name }} {{ interview.recruiter.last_name }}
+
+            Link to tool:
+
+            {% else %} Schedule interview
             <br> Choose Interviewer:
             <form id="interview-data-form" action="" method="POST">
                 <select name="interviewers" id="interviewers">
@@ -56,10 +63,11 @@
                 <br>
                 <input type="submit">
             </form>
-        </div>
+        
         {% endif %} 
+        </div>
         <div class="col-xs-12 col-md-8">
-            Resume:
+            <h3>Resume:</h3>
             <br>
             <div id="resume"> {{ user.resume.resume_text }}</div>
         </div>

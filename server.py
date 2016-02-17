@@ -1,6 +1,8 @@
 import string
 from datetime import datetime
 import os
+import subprocess   #for running shell command for converting txt to pdf
+
 from gevent import monkey; monkey.patch_all()
 from flask import Flask, render_template, redirect, request, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
@@ -37,13 +39,6 @@ def index():
     """Homepage"""
 
     return render_template("homepage.html")
-
-
-@app.route('/interview')
-def interview():
-    """Render interview pair programming tool page"""
-
-    pass
 
 
 @app.route('/signin', methods=['GET'])
@@ -320,7 +315,7 @@ def put_interview_db():
     message = client.messages.create(to="+14252143104", from_=os.environ['TWILIO_NUMBER'],
                                      body="Your interview scheduled on %s " % (str(date_object)),
                                      )
-    
+
     print '\n\n\nSuccesss!!!\n\n\n'
     return "Interview was scheduled successfully!"
 
