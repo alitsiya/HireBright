@@ -37,7 +37,7 @@ app.secret_key = 'Shhhhhhhhh'
 @app.route('/')
 def index():
     """Homepage"""
-
+        
     return render_template("homepage.html")
 
 
@@ -74,6 +74,7 @@ def sign_in():
             else:
                 print "\n Logged in - SUCCSESS!!!"
                 session['email'] = email
+                session['hr'] = True
                 flash("Logged in as %s %s" % (existing_hr.first_name, existing_hr.last_name))
 
                 return redirect("/data")
@@ -88,6 +89,7 @@ def sign_in():
             else:
                 print "\n Logged in - SUCCSESS!!!"
                 session['email'] = email
+                session['user'] = True
                 flash("Logged in as %s %s" % (existing_user.first_name, existing_user.last_name))
 
                 return redirect("/view-status")
@@ -137,7 +139,7 @@ def sign_out():
     """Log out users"""
 
     if session:
-        del session['email']
+        del session
         flash("The user has logged out")
 
     return redirect("/")
@@ -184,7 +186,7 @@ def application_submit():
 
     #check if pdf or txt file was passed
     file_name = str(text_file.filename)
-    
+
     if file_name.split('.')[1] == 'pdf':
         text_file.save('./files/RESUME.pdf')
         f = os.popen('pdftotext ./files/RESUME.pdf -')
@@ -253,6 +255,7 @@ def application_submit():
 @app.route('/view-status')
 def render_view_status():
     """Renders view status page when user signed in"""
+
     if session:
         email = session['email']
         user = User.query.filter(email == email).first()
@@ -294,7 +297,10 @@ def show_user_data(user_id):
             user = User.query.get(user_id)
             interview = Interview.query.filter(Interview.user_id==user.user_id).first()
             recruiters = Recruiter.query.all()
-            print recruiters
+
+            #may want to grub user github profile
+            # f = subprocess.call('curl -H "Authorization: token '+os.environ['GITHUB_AUTH_TOKEN']+'" https://api.github.com/users/alitsiya')
+            # print "\n\n\n", f, '\n\n\n'
             return render_template("user.html", user=user, interview=interview, recruiters=recruiters)
         else:
             flash("You don't have permissions to view a content")
@@ -336,7 +342,7 @@ def put_interview_db():
     client = TwilioRestClient(account_sid, auth_token)
  
     message = client.messages.create(to="+14252143104", from_=os.environ['TWILIO_NUMBER'],
-                                     body="Your interview scheduled on %s " % (str(date_object)),
+                                     body="Your interview with HireBright scheduled on %s " % (str(date_object)),
                                      )
 
     print '\n\n\nSuccesss!!!\n\n\n'

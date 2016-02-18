@@ -2,7 +2,7 @@
 <html>
 <head>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
-    <link href="styles.css" rel="stylesheet">
+    <link href="/styles.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>HireBright - {% block title %}HR tool for interviewing Software Engineers{% endblock %}</title>
   <script src="https://code.jquery.com/jquery-2.1.1.js"></script>
@@ -13,9 +13,9 @@
   <div class="container-fluid">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>                        
+        <span class="icon-bar">Login</span>
+        <span class="icon-bar">Signup</span>
+        <span class="icon-bar">Logout</span>                        
       </button>
 
       <div class="navbar-header">
@@ -26,6 +26,22 @@
       <ul class="nav navbar-nav">
         <li><a href="/#about">About</a></li>
       </ul>
+      <ul class="nav navbar-nav">
+        <li><a href="/tool">Tool</a></li>
+      </ul>
+      {% if session['user'] %}
+      <ul class="nav navbar-nav">
+        <li><a href="/view-status">Application Status</a></li>
+      </ul>
+      {% endif %}
+      {% if session['hr'] %}
+      <ul class="nav navbar-nav">
+        <li><a href="/data">Candidates</a></li>
+      </ul>
+      <ul class="nav navbar-nav">
+        <li><a href="/#">Your interviews</a></li>
+      </ul>
+      {% endif %}
       <ul class="nav navbar-nav navbar-right">
         {% if session %}
 
@@ -49,9 +65,7 @@
     {% endfor %}
     </ul>
 
-  <a href="/submit-application">Submit Application</a><br>
-  <a href="/view-status">Application Status</a><br>
-  {% block content %} put your content here {% endblock %}
+  {% block content %} {% endblock %}
 </div>
 <script type="text/javascript">
   setTimeout(function(){$('#flash').text('')}, 2000)
