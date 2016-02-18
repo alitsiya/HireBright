@@ -1,5 +1,5 @@
 {% extends 'base.html' %} {% block title %} Submit your application {% endblock %} {% block content %}
-{% if session %}
+{% if session.get('email') %}
 Log out first to submit application
 {% else %}
 

@@ -55,8 +55,8 @@ class Resume(db.Model):
 
     __tablename__ = "resumes"
     resume_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    resume_text = db.Column(db.String(100000), nullable=False)
-    resume_string = db.Column(db.String(100000), nullable=False)
+    resume_text = db.Column(db.String(500000), nullable=False)
+    resume_string = db.Column(db.String(500000), nullable=False)
 
     def __repr__(self):
         """Show resume's info"""
@@ -82,6 +82,7 @@ class Opening(db.Model):
     __tablename__ = "openings"
     opening_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     opening_name = db.Column(db.String(50), nullable=False)
+    opening_description = db.Column(db.String(500))
 
     def __repr__(self):
         """Show opening's info"""
@@ -121,26 +122,6 @@ class Interview(db.Model):
         return "<interview_id=%s user_id=%s status_id=%s link_id=%s>" % (self.interview_id, self.user_id,
                                                                          self.status_id, self.link_id)
 
-
-# class Submission(db.Model):
-#     """Info about submission table """
-
-#     __tablename__ = "submissions"
-#     sub_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-#     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
-#     position_id = db.Column(db.Integer, db.ForeignKey('openings.opening_id'), nullable=True)
-#     salary = db.Column(db.Integer)
-#     resume_id = db.Column(db.Integer, db.ForeignKey('resumes.resume_id'), nullable=False)
-#     time_of_submission = db.Column(db.DateTime, nullable=False)
-
-#     user = db.relationship('User', backref=db.backref("submission", order_by=user_id))
-#     opening = db.relationship('Opening', backref=db.backref("submission", order_by=position_id))
-#     resume = db.relationship('Resume', backref=db.backref("submission", order_by=sub_id))
-
-#     def __repr__(self):
-#         """Show submission's info"""
-#         return "<sub_id=%s user_id=%s position_id=%s resume_id=%s>" % (self.sub_id, self.user_id,
-#                                                                        self.position_id, self.resume_id)
 
 
 def connect_to_db(app):

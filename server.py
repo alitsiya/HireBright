@@ -193,10 +193,10 @@ def application_submit():
         f = os.popen('pdftotext ./files/RESUME.pdf -')
         file_contents = f.read()
         print type(file_contents)
-        print "\n\n\n\nToday is ", file_contents
+        
         resume_text = file_contents.translate(None, string.punctuation)
         resume_text = resume_text.strip().lower().replace('\n', ' ')
-        print "\n\n\n", resume_text
+
         print "\n\n\n PDF read SUCCESS"
 
     elif file_name.split('.')[1] == 'txt':
@@ -250,7 +250,7 @@ def application_submit():
     db.session.commit()
 
     text_file.close()
-    if not session:
+    if not session.get('email'):
         session['email'] = email
     return redirect('/')
 
