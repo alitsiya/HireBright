@@ -169,9 +169,12 @@ def application_submit():
     text_file = request.files['file']
 
     #check if user already exists
-    existing_user = User.query.filter(email == email).first()
+    existing_user = User.query.filter(User.email == email).first()
+    print text_file
+    print "\n\n\n", existing_user, "\n\n\n"
     if existing_user:
         flash("User with that email already exists, use sign-in page to edit your application.")
+        print "\n\n\n", existing_user, "\n\n\n"
         return redirect('/signin')
 
     #checks if there is an attached file
@@ -179,13 +182,33 @@ def application_submit():
         flash('Some problems with your attachment')
         return redirect('/submit-application')
 
-    #resume for display
-    file_contents = text_file.stream.read().decode("utf-8")
-    file_contents = file_contents.replace(u'\u2019', u'\'').encode('ascii', 'ignore')
-    print type(file_contents)
-    #resume type for search
-    resume_text = file_contents.translate(None, string.punctuation)
-    resume_text = resume_text.strip().lower().replace('\n', ' ')
+    #check if pdf or txt file was passed
+    file_name = str(text_file.filename)
+    
+    if file_name.split('.')[1] == 'pdf':
+        text_file.save('./files/RESUME.pdf')
+        f = os.popen('pdftotext ./files/RESUME.pdf -')
+        file_contents = f.read()
+        print type(file_contents)
+        print "\n\n\n\nToday is ", file_contents
+        resume_text = file_contents.translate(None, string.punctuation)
+        resume_text = resume_text.strip().lower().replace('\n', ' ')
+        print "\n\n\n", resume_text
+        print "\n\n\n PDF read SUCCESS"
+
+    elif file_name.split('.')[1] == 'txt':
+        #resume for display
+        file_contents = text_file.stream.read().decode("utf-8")
+        file_contents = file_contents.replace(u'\u2019', u'\'').encode('ascii', 'ignore')
+
+        #resume type for search
+        resume_text = file_contents.translate(None, string.punctuation)
+        resume_text = resume_text.strip().lower().replace('\n', ' ')
+        print "\n\n\n PDF read SUCCESS"
+
+    else:
+        flash('Some problems with your attachment')
+        return redirect('/submit-application')
 
     #creating resume object
     resume = Resume(
@@ -220,7 +243,7 @@ def application_submit():
                         status_id=status_name.status_id) 
     db.session.add(interview)
     print "\n Interview Added to Database \n"
-    flash("%s, thank you for applying! You can review your information on status page", user.first_name)
+    flash("Thank you for applying! You can review your information on status page")
     db.session.commit()
 
     text_file.close()
