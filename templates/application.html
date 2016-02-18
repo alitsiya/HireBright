@@ -1,4 +1,7 @@
 {% extends 'base.html' %} {% block title %} Submit your application {% endblock %} {% block content %}
+{% if session %}
+Log out first to submit application
+{% else %}
 
 <form action="submit-application" method="POST" enctype="multipart/form-data">
     <div class="form-group">
@@ -58,4 +61,5 @@
     <input type="submit" value="Submit" class="btn btn-default">
 </form>
 
+{% endif %}
 {% endblock %}

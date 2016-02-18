@@ -37,7 +37,8 @@ app.secret_key = 'Shhhhhhhhh'
 @app.route('/')
 def index():
     """Homepage"""
-        
+    
+    print "\n\n\n\n", session, '\n\n\n'
     return render_template("homepage.html")
 
 
@@ -74,8 +75,7 @@ def sign_in():
             else:
                 print "\n Logged in - SUCCSESS!!!"
                 session['email'] = email
-                session['hr'] = True
-                flash("Logged in as %s %s" % (existing_hr.first_name, existing_hr.last_name))
+                flash("Logged in as recruiter %s %s" % (existing_hr.first_name, existing_hr.last_name))
 
                 return redirect("/data")
 
@@ -89,9 +89,9 @@ def sign_in():
             else:
                 print "\n Logged in - SUCCSESS!!!"
                 session['email'] = email
-                session['user'] = True
-                flash("Logged in as %s %s" % (existing_user.first_name, existing_user.last_name))
-
+                flash("Logged in as applicant %s %s" % (existing_user.first_name, existing_user.last_name))
+                print "SESSION:\n\n\n\n\n\n", session
+                print "SESSION EMAIL\n\n\n\n\n\n", session["email"]
                 return redirect("/view-status")
 
 
@@ -137,9 +137,10 @@ def sign_up():
 @app.route('/logout')
 def sign_out():
     """Log out users"""
-
+    
     if session:
-        del session
+        
+        del session['email']
         flash("The user has logged out")
 
     return redirect("/")
@@ -249,6 +250,8 @@ def application_submit():
     db.session.commit()
 
     text_file.close()
+    if not session:
+        session['email'] = email
     return redirect('/')
 
 
@@ -258,10 +261,13 @@ def render_view_status():
 
     if session:
         email = session['email']
-        user = User.query.filter(email == email).first()
-        interview = Interview.query.filter(Interview.user_id==user.user_id).first()
+
+        user = User.query.filter(User.email == email).first()
+        
+        interview = Interview.query.filter(Interview.user_id==user.user_id).one()
         print user.interview
     else:
+        
         flash("You are not logged in")
         return redirect("/")
 

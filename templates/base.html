@@ -26,25 +26,9 @@
       <ul class="nav navbar-nav">
         <li><a href="/#about">About</a></li>
       </ul>
-      <ul class="nav navbar-nav">
-        <li><a href="/tool">Tool</a></li>
-      </ul>
-      {% if session['user'] %}
-      <ul class="nav navbar-nav">
-        <li><a href="/view-status">Application Status</a></li>
-      </ul>
-      {% endif %}
-      {% if session['hr'] %}
-      <ul class="nav navbar-nav">
-        <li><a href="/data">Candidates</a></li>
-      </ul>
-      <ul class="nav navbar-nav">
-        <li><a href="/#">Your interviews</a></li>
-      </ul>
-      {% endif %}
       <ul class="nav navbar-nav navbar-right">
-        {% if session %}
-
+        {% if session.get("email") %}
+        
         <li><a href="/logout">Logout</a></li>
 
         {% else %}
