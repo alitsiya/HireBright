@@ -66,9 +66,22 @@
         
 
         {% endif %} 
+            <br>
+            <div id="github_data"><h3>GitHub Profile: </h3>
             
-            <div id="github_data">GitHub: {{ github_data }}
-
+            Name: {{ github_data.name }} <br>
+            Location: {{ github_data.location }}<br>
+            Email: {{ github_data.email }}<br>
+            Blog: <a href="{{ github_data.blog }}"></a>{{ github_data.blog }}<br>
+            Bio: {{ github_data.bio }}<br>
+            Company: {{ github_data.company }}<br>
+            Started: {{ github_data.created_at }}<br>
+            Public repos: {{ github_data.public_repos }}<br>
+            Hireable: {{ github_data.hireable }}<br>
+            Followers: {{ github_data.followers }}<br>
+            Url to GitHub: <a href="{{ github_data.url }}">{{ github_data.url }}</a><br>
+            Last update: {{ github_data.updated_at }}<br>
+            <img src="{{ github_data.avatar_url }}" alt="">
             </div>
             
         </div>

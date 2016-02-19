@@ -316,7 +316,7 @@ def show_user_data(user_id):
 
             print "\n\n\nGITHUB", d
 
-            return render_template("user.html", user=user, interview=interview, recruiters=recruiters, github_data=github_data)
+            return render_template("user.html", user=user, interview=interview, recruiters=recruiters, github_data=d)
         else:
             flash("You don't have permissions to view a content")
             return redirect("/")
