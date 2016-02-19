@@ -2,7 +2,8 @@ import string
 from datetime import datetime
 import os
 import subprocess   #for running shell command for converting txt to pdf
-
+import urllib2 #for dealing with github api
+import json
 from gevent import monkey; monkey.patch_all()
 from flask import Flask, render_template, redirect, request, flash, session, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
@@ -305,9 +306,17 @@ def show_user_data(user_id):
             recruiters = Recruiter.query.all()
 
             #may want to grub user github profile
-            # f = subprocess.call('curl -H "Authorization: token '+os.environ['GITHUB_AUTH_TOKEN']+'" https://api.github.com/users/alitsiya')
-            # print "\n\n\n", f, '\n\n\n'
-            return render_template("user.html", user=user, interview=interview, recruiters=recruiters)
+            req = urllib2.Request('https://api.github.com/users/'+user.github, None, {"Authorization": 'token '+os.environ['GITHUB_AUTH_TOKEN']})
+            github_data = urllib2.urlopen(req).read()
+
+            json_acceptable_string = github_data.replace("'", "\"")
+
+            d = json.loads(json_acceptable_string)
+            print "\n\n\nkeys", d.keys()
+
+            print "\n\n\nGITHUB", d
+
+            return render_template("user.html", user=user, interview=interview, recruiters=recruiters, github_data=github_data)
         else:
             flash("You don't have permissions to view a content")
             return redirect("/")
