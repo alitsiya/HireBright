@@ -1,48 +1,131 @@
-{% extends 'base.html' %} {% block title %} Candidate profile {% endblock %} {% block content %}
+{% extends 'base.html' %} {% block title %} Candidate profile {% endblock %} 
+{% block morehead %}
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
 
-{% if user %}
-<div class='container'>
+    <!-- Custom CSS -->
+    <link href="/css/simple-sidebar.css" rel="stylesheet">
+{% endblock %}
+{% block content %} {% if user %}
+<div id="wrapper">
+
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand">
+                    
+                <div id="menu-toggle">Hide Sidebar</div>
+                    
+                </li>
+                <li>
+                    <a href="#">Dashboard</a>
+                </li>
+                <li>
+                    <a href="#">Shortcuts</a>
+                </li>
+                <li>
+                    <a href="#">Overview</a>
+                </li>
+                <li>
+                    <a href="#">Events</a>
+                </li>
+                <li>
+                    <a href="#">About</a>
+                </li>
+                <li>
+                    <a href="#">Services</a>
+                </li>
+                <li>
+                    <a href="#">Contact</a>
+                </li>
+            </ul>
+        </div>
+<div id="page-content-wrapper">        
+<div class='container-fluid'>
     <div class="row">
         <div class="col-xs-12 col-md-4">
-        <h3>Profile</h3> 
-
-            First name:<div id="name">{{ user.first_name }}</div>
-        
-            Last Name:
-                <div id='lname'>{{ user.last_name }}</div>
-           
-            Email:
-                <div id='email'>{{ user.email }}</div>
-            
-            Location:
-                <div id='location'>{{ user.location }}</div>
-            
-            Phone number:
-                <div id='phone'>{{ user.phone }}</div>
-            
-            Linkedin:
-                <div id='linkedin'>{{ user.linkedin }}</div>
-            
-            Salary:
-                <div id="salary">{{ user.salary }}</div>
-            
-            Github:
-                <div id='github'>{{ user.github }}</div>
-            
-            Desired position:
-                <div id='position'>{{ user.position }}</div>
-            
-            <br> Status: {{ interview.status.status_name }}
-            <br>
-            <!-- This code shows interview status or calendar to schedule interview -->
-            {% if interview.interview_date %} Interview date: {{ interview.interview_date }}
-            
-            Interviewer: {{ interview.recruiter.first_name }} {{ interview.recruiter.last_name }}
-
-            Link to tool:
-
-            {% else %} Schedule interview
-            <br> Choose Interviewer:
+            <h3>Profile</h3>
+            {% if github_data %} 
+            <img src="{{ github_data.avatar_url }}" width=100 heigth=100 alt="GitHub image">
+            {% endif %}
+            <table>
+                <tr>
+                    <td>First name: </td>
+                    <td>
+                        <div id="name">{{ user.first_name }}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Last Name:</td>
+                    <td>
+                        <div id='lname'>{{ user.last_name }}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Email:</td>
+                    <td>
+                        <div id='email'>{{ user.email }}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Location:</td>
+                    <td>
+                        <div id='location'>{{ user.location }}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Phone number:</td>
+                    <td>
+                        <div id='phone'>{{ user.phone }}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Linkedin:</td>
+                    <td>
+                        <div id='linkedin'>{{ user.linkedin }}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Salary:</td>
+                    <td>
+                        <div id="salary">${{ user.salary }}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Github:</td>
+                    <td>
+                        <div id='github'>{{ user.github }}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Desired position:</td>
+                    <td>
+                        <div id='position'>{{ user.position }}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Status:</td>
+                    <td>
+                        <div id='status'> {{ interview.status.status_name }}</div>
+                    </td>
+                </tr>
+            </table>
+            <br> {% if interview.interview_date %}
+            <table>
+                <tr>
+                    <td>Interview date: </td>
+                    <td>
+                        <div id='interview_date'> {{ interview.interview_date }} </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Interviewer:</td>
+                    <td>
+                        <div id='interview_date'> {{ interview.recruiter.first_name }} {{ interview.recruiter.last_name }}</div>
+                    </td>
+                </tr>
+            </table>
+            {% else %}
+            <h3>Schedule interview</h3> Choose Interviewer:
             <form id="interview-data-form" action="" method="POST">
                 <select name="interviewers" id="interviewers">
                     {% for recruiter in recruiters %}
@@ -52,38 +135,76 @@
                 <br>
                 <br>
                 <p>Date:
-                    <input type="text" id="calendar" />
-                    Time:
-                   <select name="interview_hour" id="interview_hour"> 
-                     <option value="10">10:00am</option>
-                     <option value="12">12:00pm</option>
-                     <option value="14">2:00pm</option>
-                   </select>
+                    <input type="text" id="calendar" /> Time:
+                    <select name="interview_hour" id="interview_hour">
+                        <option value="10">10:00am</option>
+                        <option value="12">12:00pm</option>
+                        <option value="14">2:00pm</option>
+                    </select>
                 </p>
                 <br>
                 <input type="submit">
             </form>
-        
-
-        {% endif %} 
-            <br>
-            <div id="github_data"><h3>GitHub Profile: </h3>
-            
-            Name: {{ github_data.name }} <br>
-            Location: {{ github_data.location }}<br>
-            Email: {{ github_data.email }}<br>
-            Blog: <a href="{{ github_data.blog }}"></a>{{ github_data.blog }}<br>
-            Bio: {{ github_data.bio }}<br>
-            Company: {{ github_data.company }}<br>
-            Started: {{ github_data.created_at }}<br>
-            Public repos: {{ github_data.public_repos }}<br>
-            Hireable: {{ github_data.hireable }}<br>
-            Followers: {{ github_data.followers }}<br>
-            Url to GitHub: <a href="{{ github_data.url }}">{{ github_data.url }}</a><br>
-            Last update: {{ github_data.updated_at }}<br>
-            <img src="{{ github_data.avatar_url }}" alt="">
+            {% endif %} 
+            {% if github_data %}
+            <div id="github_data">
+                <h3>GitHub Profile: </h3>
+                <table>
+                    <tr>
+                        <td>Name: </td>
+                        <td>{{ github_data.name }}</td>
+                    </tr>
+                    <tr>
+                        <td>Location:</td>
+                        <td>{{ github_data.location }}</td>
+                    </tr>
+                    <tr>
+                        <td>Email:</td>
+                        <td>{{ github_data.email }}</td>
+                    </tr>
+                    <tr>
+                        <td>Blog: </td>
+                        <td><a href="{{ github_data.blog }}">{{ github_data.blog }}</a></td>
+                    </tr>
+                    <tr>
+                        <td>Bio: </td>
+                        <td>{{ github_data.bio }}</td>
+                    </tr>
+                    <tr>
+                        <td>Company: </td>
+                        <td>{{ github_data.company }}</td>
+                    </tr>
+                    <tr>
+                        <td>Started:</td>
+                        <td>{{ github_data.created_at }}</td>
+                    </tr>
+                    <tr>
+                        <td>Public repos:</td>
+                        <td>{{ github_data.public_repos }}</td>
+                    </tr>
+                    <tr>
+                        <td>Hireable:</td>
+                        <td>{{ github_data.hireable }}</td>
+                    </tr>
+                    <tr>
+                        <td>Followers:</td>
+                        <td>{{ github_data.followers }}</td>
+                    </tr>
+                    <tr>
+                        <td>Url to GitHub: </td>
+                        <td><a href="{{ github_data.url }}">{{ github_data.url }}</a></td>
+                    </tr>
+                    <tr>
+                        <td>Last repo update: </td>
+                        <td>{{ github_data.updated_at }}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </table>
             </div>
-            
+            {% endif %}
         </div>
         <div class="col-xs-12 col-md-8">
             <h3>Resume:</h3>
@@ -92,8 +213,16 @@
         </div>
     </div>
 </div>
-{% endif %}
 
+{% endif %}
+</div>
+</div>
+    <script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+    </script>
 <script>
 function changeInterviewData() {
 
@@ -113,8 +242,8 @@ function updateInterview(evt) {
         'interview_hour': time,
     }
     $.ajax({
-        type : "POST",
-        url : '/schedule_interview',
+        type: "POST",
+        url: '/schedule_interview',
         data: JSON.stringify(data, null, '\t'),
         contentType: 'application/json;charset=UTF-8',
         success: function(result) {
@@ -125,9 +254,7 @@ function updateInterview(evt) {
     console.log("Finished sending AJAX");
 }
 $("#interview-data-form").on("submit", updateInterview);
-
 </script>
-
 <script src="http://code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
 <script>
 $(function() {

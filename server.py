@@ -306,15 +306,25 @@ def show_user_data(user_id):
             recruiters = Recruiter.query.all()
 
             #may want to grub user github profile
-            req = urllib2.Request('https://api.github.com/users/'+user.github, None, {"Authorization": 'token '+os.environ['GITHUB_AUTH_TOKEN']})
-            github_data = urllib2.urlopen(req).read()
+            d = None
+            try:
+                req = urllib2.Request('https://api.github.com/users/'+user.github, None, {"Authorization": 'token '+os.environ['GITHUB_AUTH_TOKEN']})
+                github_data = urllib2.urlopen(req).read()
 
-            json_acceptable_string = github_data.replace("'", "\"")
+                json_acceptable_string = github_data.replace("'", "\"")
 
-            d = json.loads(json_acceptable_string)
-            print "\n\n\nkeys", d.keys()
+                d = json.loads(json_acceptable_string)
+                print "\n\n\nkeys", d.keys()
 
-            print "\n\n\nGITHUB", d
+                print "\n\n\nGITHUB", d
+            except IOError as e:
+                print "I/O error({0}): {1}".format(e.errno, e.strerror)
+            except ValueError:
+                print "Could not convert data to a dictionary"
+            except:
+                print "Unexpected error:"
+                raise
+                
 
             return render_template("user.html", user=user, interview=interview, recruiters=recruiters, github_data=d)
         else:
