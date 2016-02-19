@@ -1,6 +1,6 @@
-<!DOCTYPE html>
-<html>
-  <head>
+{% extends 'base.html' %}
+{% block title %} Pair programming tool {% endblock %}
+{% block morehead %}
     <!-- <link href="stylesheets/style.css" rel="stylesheet"> -->
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/default.min.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js"></script>
@@ -74,9 +74,10 @@ $(function () {
     };
 });
     </script>
+
+{% endblock %}
     <!-- <script>hljs.initHighlightingOnLoad();</script> -->
-  </head>
-<body>
+{% block content %}
   <div id="chat">
     <div id="nickname">
       <form id="set-nickname" class="wrap">
@@ -99,5 +100,4 @@ $(function () {
     <div id="tool" name="tool" contentEditable="true">Code here</div>
 </code></pre>
 <!--   </div> -->
-</body>
-</html>
+{% endblock %}
