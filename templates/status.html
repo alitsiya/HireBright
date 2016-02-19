@@ -1,24 +1,49 @@
-{% extends 'base.html' %} 
-{% block title %} Application status {% endblock %} 
-{% block content %}
-<h2>Your application</h2>
-{% if user %}
-<label>First name: <div id="name">{{ user.first_name }}</div></label>&nbsp
-<label>Last Name: <div id='lname'>{{ user.last_name }}</div></label>&nbsp
-<label>Email: <div id='email'>{{ user.email }}</div></label>&nbsp
-<label>Location: <div id='location'>{{ user.location }}</div></label>&nbsp
-<label>Phone number: <div id='phone'>{{ user.phone }}</div></label>&nbsp
-<label>Linkedin: <div id='linkedin'>{{ user.linkedin }}</div></label>&nbsp
-<label>Salary: <div id="salary">{{ user.salary }}</div></label>
-<label>Github: <div id='github'>{{ user.github }}</div></label>
-<label>Desired position: <div id='position'>{{ user.position }}</div></label>
-<label>Submission date: <div id='date'>{{ user.time_of_submission }}</div></label>
+{% extends 'base.html' %} {% block title %} Application status {% endblock %} {% block content %}
+<h2>Your application</h2> {% if user %}
+<div class='container'>
+    <div class="row">
+        <div class="col-xs-12 col-md-4">
+            <h3>Profile</h3>
+            <label>First name:
+                <div id="name">{{ user.first_name }}</div>
+            </label>&nbsp
+            <label>Last Name:
+                <div id='lname'>{{ user.last_name }}</div>
+            </label>&nbsp
+            <label>Email:
+                <div id='email'>{{ user.email }}</div>
+            </label>&nbsp
+            <label>Location:
+                <div id='location'>{{ user.location }}</div>
+            </label>&nbsp
+            <label>Phone number:
+                <div id='phone'>{{ user.phone }}</div>
+            </label>&nbsp
+            <label>Linkedin:
+                <div id='linkedin'>{{ user.linkedin }}</div>
+            </label>&nbsp
+            <label>Salary:
+                <div id="salary">{{ user.salary }}</div>
+            </label>
+            <label>Github:
+                <div id='github'>{{ user.github }}</div>
+            </label>
+            <label>Desired position:
+                <div id='position'>{{ user.position }}</div>
+            </label>
+            <label>Submission date:
+                <div id='date'>{{ user.time_of_submission }}</div>
+            </label>
+            <br> Status: {{ interview.status.status_name }}
+            <br> {% if interview.link_id %} Link: {{ interview.tool.link }}
+            <br> {% endif %}
+        </div>
+        <div class="col-xs-12 col-md-8">
+            <h3>Resume:</h3>
+            <br>{{ user.resume.resume_text }}
+        </div>
+    </div>
+</div>
 <br>
-Status: {{ interview.status.status_name }} <br>
-{% if interview.link_id %}
-Link: {{ interview.tool.link }} <br>
-{% endif %}
-Resume: <br>{{ user.resume.resume_text }}
-
-{% endif %}
-{% endblock %}
+<br>
+{% endif %} {% endblock %}

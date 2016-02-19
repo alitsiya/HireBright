@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Search for candidate</h1>
+<form class="form-search" id="form-search">
+  <div class="input-append">
+    <input type="text" id="text" class="span2 search-query input-xxlarge" placeholder="Search here">
+    <button type="submit" class="btn">Search</button>
+  </div>
+</form>
+<div class="results">
+    
+</div>
+
+<script>
+function searchQuery(evt) {
+    evt.preventDefault();
+    var query = $('#text').val()
+    var data = {
+        'search_query': query,
+    }
+    $.ajax({
+        type : "POST",
+        url : '/search',
+        data: JSON.stringify(data, null, '\t'),
+        contentType: 'application/json;charset=UTF-8',
+        success: function(result) {
+            console.log(result);
+            console.log(Object.keys(result));
+            console.log(Object.keys(result).length);
+            $('.results').append(result);
+            
+            var keys = Object.keys(result);
+            $('.results').append(keys.length + ' results was found');
+            for (var i=0; i < keys.length; i++) {
+                $('.results').append("<div id="+ keys[i] +">"+ (i+1) +": ");
+                console.log(result[keys[i]].user)
+                $('#'+keys[i]).append('Name: ' + result[keys[i]].user + '<br /> Email: ' + result[keys[i]].email + '<br />');
+                
+            }
+        }
+    });
+
+    console.log("Finished sending AJAX");
+}
+$("#form-search").on("submit", searchQuery);
+
+</script>
+
+{% endblock %}

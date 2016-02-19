@@ -4,7 +4,7 @@ import os
 import subprocess   #for running shell command for converting txt to pdf
 
 from gevent import monkey; monkey.patch_all()
-from flask import Flask, render_template, redirect, request, flash, session
+from flask import Flask, render_template, redirect, request, flash, session, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 
 from twilio.rest import TwilioRestClient
@@ -346,13 +346,44 @@ def put_interview_db():
     account_sid = os.environ['TWILIO_ACCOUNT_SID']
     auth_token = os.environ['TWILIO_AUTH_TOKEN']
     client = TwilioRestClient(account_sid, auth_token)
- 
+
     message = client.messages.create(to="+14252143104", from_=os.environ['TWILIO_NUMBER'],
                                      body="Your interview with HireBright scheduled on %s " % (str(date_object)),
                                      )
 
     print '\n\n\nSuccesss!!!\n\n\n'
     return "Interview was scheduled successfully!"
+
+
+@app.route('/search')
+def render_search():
+    """Render search page"""
+
+    return render_template('search.html')
+
+
+@app.route('/search', methods=['POST'])
+def search():
+    """Search using inverted index for keywords"""
+
+    #take data from ajax request and split it to multiply queries
+    search_query = request.json['search_query'].lower().split(' ')
+
+    results = []
+    res_dict = {}
+    for s_query in search_query:
+        result = Resume.query.filter(Resume.resume_string.like("%"+s_query+"%")).all()
+        print "\n\n\nRESULT:", results
+        results.extend(result)
+
+    for resume in set(results):
+
+        if res_dict.get(resume.user[0].user_id):
+            pass
+        else:
+            res_dict[resume.user[0].user_id] = {'resume': resume.resume_text, 'user': resume.user[0].first_name + ' ' + resume.user[0].last_name, 'email': resume.user[0].email}
+
+    return jsonify(res_dict)
 
 
 @app.route('/tool')
