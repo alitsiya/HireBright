@@ -16,8 +16,11 @@
                 <tr><td>Desired position:</td><td><div id='position'>{{ user.position }}</div></td></tr>
                 <tr><td>Submission date:</td><td><div id='date'>{{ user.time_of_submission }}</div></td></tr>
                 <tr><td>Status: </td><td>{{ interview.status.status_name }}</td></tr>
+                {% if interview.interview_date %}
+                <tr><td>Interview Date: </td><td>{{ interview.interview_date }}</td></tr>
+                {% endif %}
                 {% if interview.link_id %} 
-                <tr><td>Link: </td><td>{{ interview.tool.link }}</td></tr>
+                <tr><td>Link: </td><td><a href="/tool/{{ interview.tool.link }}">{{ interview.tool.link }}</a></td></tr>
                 {% endif %}
 
             </table>

@@ -4,10 +4,11 @@ import os
 import subprocess   #for running shell command for converting txt to pdf
 import urllib2 #for dealing with github api
 import json
+from random import choice
 from gevent import monkey; monkey.patch_all()
 from flask import Flask, render_template, redirect, request, flash, session, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
-
+from flask.ext.bcrypt import Bcrypt #for securing passwords
 from twilio.rest import TwilioRestClient
 
 from model import Recruiter, User, Resume, Tool, Opening, Status, Interview, connect_to_db, db
@@ -31,6 +32,7 @@ class ChatNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
 
 
 app = Flask(__name__)
+bcrypt = Bcrypt(app)
 
 app.secret_key = 'Shhhhhhhhh'
 
@@ -67,7 +69,7 @@ def sign_in():
         return redirect('/submit-application')
     else:
         if existing_hr:
-            if existing_hr.password != password:
+            if not bcrypt.check_password_hash(existing_hr.password, password):
                 print "\n Incorrect password\n\n"
                 flash("Incorrect password")
 
@@ -81,7 +83,7 @@ def sign_in():
                 return redirect("/data")
 
         if existing_user:
-            if existing_user.password != password:
+            if not bcrypt.check_password_hash(existing_user.password, password):
                 print "\n Incorrect password\n\n"
                 flash("Incorrect password")
 
@@ -109,6 +111,7 @@ def sign_up():
 
     email = request.form.get('email')
     password = request.form.get('password')
+    pw_hash = bcrypt.generate_password_hash(password)
     first_name = request.form.get('first_name')
     last_name = request.form.get('last_name')
     title = request.form.get('title')
@@ -120,7 +123,7 @@ def sign_up():
                     first_name=first_name,
                     last_name=last_name,
                     email=email,
-                    password=password,
+                    password=pw_hash,
                     title=title,
                     phone=phone,
                     )
@@ -162,6 +165,7 @@ def application_submit():
 
     email = request.form.get('email')
     password = request.form.get('password')
+    pw_hash = bcrypt.generate_password_hash(password)
     first_name = request.form.get('first_name')
     last_name = request.form.get('last_name')
     location = request.form.get('location')
@@ -228,7 +232,7 @@ def application_submit():
                     first_name=first_name,
                     last_name=last_name,
                     email=email,
-                    password=password,
+                    password=pw_hash,
                     location=location,
                     position=position,
                     phone=phone,
@@ -264,11 +268,11 @@ def render_view_status():
         email = session['email']
 
         user = User.query.filter(User.email == email).first()
-        
+
         interview = Interview.query.filter(Interview.user_id==user.user_id).one()
         print user.interview
     else:
-        
+
         flash("You are not logged in")
         return redirect("/")
 
@@ -325,7 +329,6 @@ def show_user_data(user_id):
             except:
                 print "Unexpected error:"
                 raise
-                
 
             return render_template("user.html", user=user, interview=interview, recruiters=recruiters, github_data=d)
         else:
@@ -336,11 +339,21 @@ def show_user_data(user_id):
         return redirect("/")
 
 
+# helper function that creates random url for pair programming tool
+def create_url():
+    s = string.letters + string.digits
+    url = ''
+    for i in range(10):
+        url += choice(s)
+    return url
+
+
 @app.route('/schedule_interview', methods=["POST"])
 def put_interview_db():
-    """When on page users/<int> 'Schedule interview' form submitts it sends ajax call that 
+    """When on page users/<int> 'Schedule interview' form submitts it sends ajax call that
         updates user interview table in db.
     """
+
     date = request.json['interview_date']    #01/29/2016 format
     time = request.json['interview_hour']    #10, 12, 14 format
     recrcuiter_id = request.json['recrcuiter_id']
@@ -354,6 +367,13 @@ def put_interview_db():
     interview = Interview.query.filter(Interview.user_id==user.user_id).first()
 
     status = Status.query.filter(Status.status_name=="Phone Interview").one()
+
+    if not interview.link_id:
+        url = create_url()
+        tool = Tool( link=url)
+        db.session.add(tool)
+        db.session.flush()
+        interview.link_id = tool.link_id
 
     interview.interview_date = date_object
     interview.recruiter_id = recrcuiter_id
@@ -381,10 +401,9 @@ def cancel_interview():
 
     data = int(request.json['user_id'])
     interview = Interview.query.filter_by(user_id=data).one()
-    print "\n\n", interview.interview_date
-    interview.interview_date = None
-    print "\n\n", interview.interview_date
 
+    # updating interview fields
+    interview.interview_date = None
     interview.recruiter_id = None
     interview.status_id = 1 #this should have more logic, if I will have time
     db.session.add(interview)
@@ -410,6 +429,8 @@ def search():
     results = []
     res_dict = {}
     for s_query in search_query:
+        # r1 = Resume.query.filter(Resume.resume_search_idx.like("%"+s_query+"%")).all()
+        # print "\n\n\nR1", r1
         result = Resume.query.filter(Resume.resume_string.like("%"+s_query+"%")).all()
         print "\n\n\nRESULT:", results
         results.extend(result)
@@ -444,8 +465,6 @@ def show_interviews():
         else:
             flash('You are not registred or don\'t have permissions to view data')
             return redirect('/')
-
-    
 
 
 @app.route('/tool')

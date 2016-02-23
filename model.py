@@ -2,6 +2,7 @@
 
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from sqlalchemy import Index
 
 db = SQLAlchemy()
 
@@ -13,7 +14,7 @@ class Recruiter(db.Model):
     recruiter_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     first_name = db.Column(db.String(20), nullable=False)
     last_name = db.Column(db.String(20), nullable=False)
-    password = db.Column(db.String(20), nullable=False)
+    password = db.Column(db.String(60), nullable=False)
     email = db.Column(db.String(20), nullable=False)
     title = db.Column(db.String(30))
     phone = db.Column(db.String(30))
@@ -31,7 +32,7 @@ class User(db.Model):
     user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     first_name = db.Column(db.String(20), nullable=False)
     last_name = db.Column(db.String(20), nullable=False)
-    password = db.Column(db.String(20), nullable=False)
+    password = db.Column(db.String(60), nullable=False)
     location = db.Column(db.String(50))
     email = db.Column(db.String(30), nullable=False)
     phone = db.Column(db.String(30), nullable=False)
@@ -49,7 +50,6 @@ class User(db.Model):
         return "<user_id=%s first_name=%s last_name=%s email=%s>" % (self.user_id, self.first_name,
                                                                      self.last_name, self.email)
 
-
 class Resume(db.Model):
     """Resume table"""
 
@@ -58,10 +58,13 @@ class Resume(db.Model):
     resume_text = db.Column(db.String(500000), nullable=False)
     resume_string = db.Column(db.String(500000), nullable=False)
 
+    
+
     def __repr__(self):
         """Show resume's info"""
         return "<resume_id=%s>" % (self.resume_id)
 
+# resume_search = Index('resume_search_idx', resumes.c.resume_string, postgresql_using='gin')
 
 class Tool(db.Model):
     """Pair-programming tool table"""
