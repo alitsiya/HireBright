@@ -1,10 +1,4 @@
 {% extends 'base.html' %} {% block title %} Candidate profile {% endblock %} 
-{% block morehead %}
-    <link href="/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom CSS -->
-    <link href="/css/simple-sidebar.css" rel="stylesheet">
-{% endblock %}
 {% block content %} {% if user %}
 <div id="wrapper">
 
@@ -17,25 +11,16 @@
                     
                 </li>
                 <li>
-                    <a href="#">Dashboard</a>
+                    <a href="/data">View all</a>
                 </li>
                 <li>
-                    <a href="#">Shortcuts</a>
+                    <a href="/interviews">Your interviews</a>
                 </li>
                 <li>
-                    <a href="#">Overview</a>
+                    <a href="/tool">Tool</a>
                 </li>
                 <li>
-                    <a href="#">Events</a>
-                </li>
-                <li>
-                    <a href="#">About</a>
-                </li>
-                <li>
-                    <a href="#">Services</a>
-                </li>
-                <li>
-                    <a href="#">Contact</a>
+                    <a href="/search">Search</a>
                 </li>
             </ul>
         </div>
@@ -109,7 +94,9 @@
                     </td>
                 </tr>
             </table>
-            <br> {% if interview.interview_date %}
+            <br>
+
+            <div id="interview">
             <table>
                 <tr>
                     <td>Interview date: </td>
@@ -120,32 +107,34 @@
                 <tr>
                     <td>Interviewer:</td>
                     <td>
-                        <div id='interview_date'> {{ interview.recruiter.first_name }} {{ interview.recruiter.last_name }}</div>
+                        <div id='interviewer'> {{ interview.recruiter.first_name }} {{ interview.recruiter.last_name }}</div>
                     </td>
                 </tr>
             </table>
-            {% else %}
-            <h3>Schedule interview</h3> Choose Interviewer:
+            <button onclick="cancelInterview()">Cancel interview</button>
+            </div>
+
+            <div id="nointerview">
+            <h3>Schedule interview</h3> 
             <form id="interview-data-form" action="" method="POST">
-                <select name="interviewers" id="interviewers">
+            <table>
+                <tr><td>Choose Interviewer:</td><td>
+                    <select name="interviewers" id="interviewers">
                     {% for recruiter in recruiters %}
                     <option value="{{ recruiter.recruiter_id}}">{{ recruiter.first_name }} {{ recruiter.last_name }}</option>
                     {% endfor %}
-                </select>
-                <br>
-                <br>
-                <p>Date:
-                    <input type="text" id="calendar" /> Time:
-                    <select name="interview_hour" id="interview_hour">
+                </select></td></tr>
+                <tr><td>Date</td><td><input type="text" id="calendar" /> </td></tr>
+                <tr><td>Time:</td><td><select name="interview_hour" id="interview_hour">
                         <option value="10">10:00am</option>
                         <option value="12">12:00pm</option>
                         <option value="14">2:00pm</option>
-                    </select>
-                </p>
-                <br>
+                    </select></td></tr>
+            </table>
                 <input type="submit">
             </form>
-            {% endif %} 
+            </div>
+            
             {% if github_data %}
             <div id="github_data">
                 <h3>GitHub Profile: </h3>
@@ -204,6 +193,8 @@
                     </tr>
                 </table>
             </div>
+            {% else %}
+            <div>No GitHub data was found</div>
             {% endif %}
         </div>
         <div class="col-xs-12 col-md-8">
@@ -217,19 +208,56 @@
 {% endif %}
 </div>
 </div>
+
+ <!-- Show or hide interview info or schedule interview -->
+ <script>
+  {% if interview.interview_date %}
+ $('#nointerview').toggle();
+ {% else %}
+  $('#interview').toggle();
+{% endif %} 
+</script>
+
+
+<!-- Hides side menu -->
     <script>
-    $("#menu-toggle").click(function(e) {
+    $(".nav").click(function(e) {
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");
     });
     </script>
+
+<!-- this function for sending AJAX request to server to cancel interview for user -->
+ <script>
+
+    function cancelInterview() {
+        var data = {
+            'user_id': window.location.pathname.split('/')[2],
+        };
+        console.log(data);
+        $.ajax({
+        type : "POST",
+        url : '/cancel-interview',
+        data: JSON.stringify(data, null, '\t'),
+        contentType: 'application/json;charset=UTF-8',
+        success: function(result) {
+            if (result === 'Success') {
+                $('#nointerview').toggle();
+                $('#interview').toggle();
+            console.log('Success');
+            }
+            else {
+                console.log('Sometihng went wrong!')
+            }
+
+        }
+        });
+        console.log("Finished sending AJAX");
+    }
+ </script>
+<!-- Updates database when interview scheduled -->
 <script>
-function changeInterviewData() {
-
-    console.log("Finished updateInterview");
-}
-
-function updateInterview(evt) {
+function sceduleInterview(evt) {
     evt.preventDefault();
     var recr_id = $("#interviewers option:selected").val()
     var date = $('#calendar').val()
@@ -247,14 +275,19 @@ function updateInterview(evt) {
         data: JSON.stringify(data, null, '\t'),
         contentType: 'application/json;charset=UTF-8',
         success: function(result) {
+            $('#nointerview').toggle();
+            $('#interview').toggle();
+            $('#interview_date').text($('#calendar').val() + ' ' + $("#interview_hour option:selected").text());
+            $('#interviewer').text($("#interviewers option:selected").text());
             console.log(result);
         }
     });
 
     console.log("Finished sending AJAX");
 }
-$("#interview-data-form").on("submit", updateInterview);
+$("#interview-data-form").on("submit", sceduleInterview);
 </script>
+
 <script src="http://code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
 <script>
 $(function() {

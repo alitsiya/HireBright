@@ -4,60 +4,73 @@ Log out first to submit application
 {% else %}
 
 <form action="submit-application" method="POST" enctype="multipart/form-data">
-    <div class="form-group">
-    <label>First Name</label>
-        <input type="text" name="first_name"> *
-    </div>
-    <div class="form-group">
-    <label>Last Name
-        <input type="text" name="last_name"> *
-    </label>
-    </div>
-    <div class="form-group">
-    <label>Email
-        <input type="email" name="email"> *
-    </label>
-    </div>
-    <div class="form-group">
-    <label>Password
-        <input type="password" name="password"> *
-    </label>
-    </div>
-    <div class="form-group">
-    <label>Phone number
-        <input type="text" name="phone"> *
-    </label>
-    </div>
-    <div class="form-group">
-    <label>Location
-        <input type="text" name="location">
-    </label>
-    </div>
-    <div class="form-group">
-    <label>Linkedin
-        <input type="text" name="linkedin">
-    </label>
-    </div>
-    <div class="form-group">
-    <label>Github login
-        <input type="text" name="github">
-    </label>
-    </div>
-    <div class="form-group">
-    <label>Desired position
-        <input type="text" name="position">
-    </label>
-    </div>
-    <div class="form-group">
-    <label>Salary
-        <input type="text" name="salary">
-    </label>
-    </div>
-    <div class="form-group">
-    <label>Attach resume:
-        <input type="file" name="file">
-    </label>
-    </div>
+    
+        <table>
+            <tr>
+                <div class="form-group"><td>First Name</td><td><input type="text" name="first_name"> *</td></div>
+            </tr>
+            <tr>
+                <div class="form-group">
+   
+    <td>Last Name</td><td><input type="text" name="last_name"> *</td> </div>
+            </tr>
+                        <tr>
+                <div class="form-group">
+    <td>Email</td><td><input type="email" name="email"> *</td></div>
+            </tr>
+                        <tr>
+                <div class="form-group">
+    <td>Password</td><td><input type="password" name="password"> *</td></div>
+            </tr>
+                        <tr>
+                <div class="form-group">
+    <td>Password</td><td><input type="password" name="password"> *</td></div>
+            </tr>
+                        <tr>
+                <div class="form-group">
+    <td>Phone number</td><td><input type="text" name="phone"> *</td></div>
+            </tr>
+                        <tr>
+                <div class="form-group">
+    <td>Location</td><td><input type="text" name="location"></td></div>
+            </tr>
+                        <tr>
+               <div class="form-group">
+    <td>Linkedin</td><td><input type="text" name="linkedin"></td></div> 
+            </tr>
+                        <tr>
+                <div class="form-group">
+
+    <td>Github login</td><td><input type="text" name="github"></td></div>
+            </tr>
+                        <tr>
+                <div class="form-group">
+    <td>Desired position</td><td><input type="text" name="position"></td></div>
+            </tr>
+                        <tr>
+                <div class="form-group">
+    <td>Desired salary</td><td><input type="text" name="salary"></td></div>
+            </tr>
+                        <tr>
+                <div class="form-group">
+
+    <td>Attach resume:</td><td><input type="file" name="file"></td></div>
+            </tr>
+
+        </table>
+    <label></label>
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <input type="submit" value="Submit" class="btn btn-default">
 </form>
 

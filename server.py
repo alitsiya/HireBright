@@ -284,6 +284,7 @@ def render_data():
         recruiter = Recruiter.query.filter(email == email).first()
         if recruiter:
             users = User.query.all()
+
             return render_template("data.html", users=users)
         else:
             flash("You don't have permissions to view a content")
@@ -374,6 +375,24 @@ def put_interview_db():
     return "Interview was scheduled successfully!"
 
 
+@app.route('/cancel-interview', methods=['POST'])
+def cancel_interview():
+    """When button cancel interview submited it updates db"""
+
+    data = int(request.json['user_id'])
+    interview = Interview.query.filter_by(user_id=data).one()
+    print "\n\n", interview.interview_date
+    interview.interview_date = None
+    print "\n\n", interview.interview_date
+
+    interview.recruiter_id = None
+    interview.status_id = 1 #this should have more logic, if I will have time
+    db.session.add(interview)
+    db.session.commit()
+    print "\n\n\n Interview for user_id", data, "was canceled"
+    return "Success"
+
+
 @app.route('/search')
 def render_search():
     """Render search page"""
@@ -403,6 +422,30 @@ def search():
             res_dict[resume.user[0].user_id] = {'resume': resume.resume_text, 'user': resume.user[0].first_name + ' ' + resume.user[0].last_name, 'email': resume.user[0].email}
 
     return jsonify(res_dict)
+
+
+@app.route('/interviews')
+def show_interviews():
+    """"""
+
+    if session:
+        email = session.get('email')
+        print "\n\n\n", email
+        recruiter = Recruiter.query.filter(Recruiter.email==email).first()
+        if recruiter:
+            print "\n\n\n Recruiter id", recruiter.recruiter_id
+            interviews = Interview.query.filter_by(recruiter_id=recruiter.recruiter_id).all()
+            print "\n\n\n", interviews
+            if interviews:
+                return render_template('interviews.html', interviews=interviews)
+            else:
+                flash('You don\'t have anything scheduled')
+                return redirect('/data')
+        else:
+            flash('You are not registred or don\'t have permissions to view data')
+            return redirect('/')
+
+    
 
 
 @app.route('/tool')

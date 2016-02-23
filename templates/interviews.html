@@ -1,0 +1,35 @@
+{% extends 'base.html' %} 
+{% block title %} Your interviews {% endblock %} 
+{% block content %}
+<div id="wrapper">
+
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand">
+                    
+                <div id="menu-toggle">Hide Sidebar</div>
+                    
+                </li>
+                <li>
+                    <a href="/data">View all</a>
+                </li>
+                <li>
+                    <a href="/interviews">Your interviews</a>
+                </li>
+                <li>
+                    <a href="/tool">Tool</a>
+                </li>
+                <li>
+                    <a href="/search">Search</a>
+                </li>
+            </ul>
+        </div>
+<div id="page-content-wrapper">        
+<div class='container-fluid'>
+<h3>Your interviews</h3>
+{% for interview in interviews %}
+With <a href="/users/{{ interview.user_id }}">{{ interview.user.first_name }} {{ interview.user.last_name }}</a> on {{ interview.interview_date }}
+{% endfor %}
+</div>
+{% endblock %}

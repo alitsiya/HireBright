@@ -1,17 +1,46 @@
-{% extends 'base.html' %}
-{% block title %} Resume Data {% endblock %}
+{% extends 'base.html' %} 
+{% block title %} Resume Data {% endblock %} 
 {% block content %}
-
-    <h2>Resume Data</h2>
-
-{% if users %}
-<ul>
-{% for user in users %}
-<li>
-    <a href="/users/{{ user.user_id }}">{{ user.first_name }} {{ user.last_name }}</a>
-</li>
-{% endfor %}
-</ul>
-{% endif %}
-
+<div id="wrapper">
+    <!-- Sidebar -->
+    <div id="sidebar-wrapper">
+        <ul class="sidebar-nav">
+            <li class="sidebar-brand">
+                <div id="menu-toggle">Hide Sidebar</div>
+            </li>
+            <li>
+                <a href="/data">View all</a>
+            </li>
+            <li>
+                <a href="/interviews">Your interviews</a>
+            </li>
+            <li>
+                <a href="/tool">Tool</a>
+            </li>
+            <li>
+                <a href="/search">Search</a>
+            </li>
+        </ul>
+    </div>
+    <div id="page-content-wrapper">
+        <div class='container-fluid'>
+            <h2>Resume Data</h2> {% if users %}
+            <ul>
+                {% for user in users %}
+                <li>
+                    <a href="/users/{{ user.user_id }}">{{ user.first_name }} {{ user.last_name }} </a> <span class="status-{{ user.interview[0].status_id }}">{{ user.interview[0].status.status_name }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<!-- Hides side menu -->
+    <script>
+    $(".navbar navbar-inverse").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+    </script>
 {% endblock %}
