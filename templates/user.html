@@ -77,7 +77,7 @@
                     </tr>
                     <tr>
                         <td>Link to Interview: </td>
-                        <td><a href="{{ interview.tool.link}}">{{ interview.tool.link}}</a></td>
+                        <td><a href="/tool/{{ interview.tool.link}}">{{ interview.tool.link}}</a></td>
                     </tr>
                     <tr>
                         <td>Interviewer: </td>
@@ -193,14 +193,11 @@
 </div>
 <!-- Show or hide interview info or schedule interview -->
 <script>
-{ %
-    if interview.interview_date %
-}
-$('#nointerview').toggle(); { %
-    else %
-}
-$('#interview').toggle(); { % endif %
-}
+{% if interview.interview_date %}
+    $('#nointerview').toggle(); 
+{% else %}
+    $('#interview').toggle(); 
+{% endif %}
 </script>
 <!-- this function for sending AJAX request to server to cancel interview for user -->
 <script>

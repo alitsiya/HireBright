@@ -20,22 +20,20 @@ from socketio.mixins import RoomsMixin, BroadcastMixin
 # The socket.io namespace
 class ChatNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
 
-    def on_room_name(self, room_name):
-        print room_name
+    def room_name(self, user1, user2):
+        pass
 
 
     def on_nickname(self, nickname):
-        # print "\n\n\nSESSION ROOM", session['email']
-        # print "\n\n\nSESSION ROOM", session['room'] 
+
         self.environ.setdefault('nicknames', []).append(nickname)
         self.socket.session['nickname'] = nickname
         self.broadcast_event('announcement', '%s has connected' % nickname)
         self.broadcast_event('nicknames', self.environ['nicknames'])
         # Just have them join a default-named room
 
-        # room_name = session['room']
-
         self.join('main_room')
+
 
     def on_user_message(self, msg):
         self.emit_to_room('main_room', 'msg_to_room', self.socket.session['nickname'], msg)
