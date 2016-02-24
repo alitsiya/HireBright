@@ -20,8 +20,9 @@ from socketio.mixins import RoomsMixin, BroadcastMixin
 # The socket.io namespace
 class ChatNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
 
-    def room_name(self, user1, user2):
-        pass
+    # def on_room_name(self, url):
+    #     self.environ.setdefault('room_name', []).append(url)
+    #     print "\n\n\nURL", url
 
 
     def on_nickname(self, nickname):
@@ -445,11 +446,28 @@ def search():
     #take data from ajax request and split it to multiply queries
     search_query = request.json['search_query'].lower().split(' ')
 
+    QUERY = """SELECT *, (SELECT ts_rank(to_tsvector(resume_string), to_tsquery('python'))) AS relevancy FROM resumes ORDER BY relevancy DESC
+            """
+
+    cursor = db.session.execute(QUERY)
+    results = cursor.fetchall()
+    # import pdb
+    # pdb.set_trace()
+
+    print "\n\n\n\nRRRRRRR", results
+
     results = []
     res_dict = {}
     for s_query in search_query:
-        # r1 = Resume.query.filter(Resume.resume_search_idx.like("%"+s_query+"%")).all()
-        # print "\n\n\nR1", r1
+        # select resume_id from resumes where (select to_tsvector(resumes.language::regconfig, resume_string) @@ to_tsquery('python')) = true;
+
+        # r = db.session.execute("select resume_id, (SELECT ts_rank(to_tsvector(resume_string), to_tsquery('python'))) AS relevancy from resumes ORDER BY relevancy DESC;").all()
+        # rs = r.fetchall()
+        # print "\n\n\n\nRRRRRRR", rs
+        # for r in rs:
+        #     print "\n\n\nrrrrr",r
+
+
         result = Resume.query.filter(Resume.resume_string.like("%"+s_query+"%")).all()
         print "\n\n\nRESULT:", results
         results.extend(result)

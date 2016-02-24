@@ -58,6 +58,9 @@ $(function () {
             }
             $('#nickname-err').css('visibility', 'visible');
         });
+
+        socket.emit('room_name', window.location.pathname.split('/')[2]);
+        
         return false;
     });
 
