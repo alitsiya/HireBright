@@ -454,7 +454,7 @@ def search():
 
     QUERY = """SELECT resume_id, (SELECT ts_rank(to_tsvector(resume_string), to_tsquery((:query)))) AS relevancy FROM resumes ORDER BY relevancy DESC
             """
-    import pdb; pdb.set_trace()
+    # import pdb; pdb.set_trace()
     cursor = db.session.execute(QUERY, {'query': query})
     results = cursor.fetchall()
 
@@ -462,9 +462,13 @@ def search():
     print "\n\n\n\nRRRRRRR", results
     res_dict = {}
     for result in results:
+        print "\n\n\nRESULT", result
         if result[1] > 0.001:
             resume = Resume.query.get(result[0])
-            res_dict[resume.user[0].user_id] = {'resume': resume.resume_text, 'user': resume.user[0].first_name + ' ' + resume.user[0].last_name, 'email': resume.user[0].email, 'relevancy': result[1]}
+            print "\n\n\nRESUME", resume
+            if resume.user:
+                
+                res_dict[resume.user[0].user_id] = {'resume': resume.resume_text, 'user': resume.user[0].first_name + ' ' + resume.user[0].last_name, 'email': resume.user[0].email, 'relevancy': result[1]}
         else:
             pass
 
