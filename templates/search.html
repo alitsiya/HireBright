@@ -1,42 +1,15 @@
-{% extends 'base.html' %} 
-{% block title %} Search {% endblock %} 
-{% block content %}
-<div id="wrapper">
-    <!-- Sidebar -->
-    <div id="sidebar-wrapper">
-        <ul class="sidebar-nav">
-            <li class="sidebar-brand">
-                <div id="menu-toggle">Hide Sidebar</div>
-            </li>
-            <li>
-                <a href="/data">View all</a>
-            </li>
-            <li>
-                <a href="/interviews">Your interviews</a>
-            </li>
-            <li>
-                <a href="/tool">Tool</a>
-            </li>
-            <li>
-                <a href="/search">Search</a>
-            </li>
-        </ul>
-    </div>
-    <div id="page-content-wrapper">
-        <div class='container-fluid'>
-            <h1>Search for candidate</h1>
-            <form class="form-search" id="form-search">
-                <div class="input-append">
-                    <input type="text" id="text" class="span2 search-query input-xxlarge" placeholder="Search here">
-                    <button type="submit" class="btn">Search</button>
-                </div>
-            </form>
-            <div class="results">
-            </div>
+{% extends 'base.html' %} {% block title %} Search {% endblock %} {% block content %}
+<div class='container-fluid'>
+    <h1>Search for candidate</h1>
+    <form class="form-search" id="form-search">
+        <div class="input-append">
+            <input type="text" id="text" class="span2 search-query input-xxlarge" placeholder="Search here">
+            <button type="submit" class="btn">Search</button>
         </div>
+    </form>
+    <div class="results">
     </div>
 </div>
-
 <!-- Search form action -->
 <script>
 function searchQuery(evt) {
@@ -59,8 +32,8 @@ function searchQuery(evt) {
             $('.results').text(keys.length + ' results was found');
             for (var i = 0; i < keys.length; i++) {
                 snippet = result[keys[i]].resume
-                $('.results').append("<div id=" + keys[i] + " class='search-result'>" + (i + 1) + ": " + 'Name: ' + 
-                    "<a href='/users/"+ keys[i] +"'>"+ result[keys[i]].user +"</a>" + ' Email: ' + result[keys[i]].email + '<br />' + snippet.slice(0, 140) + '<br>');
+                $('.results').append("<div id=" + keys[i] + " class='search-result'>" + (i + 1) + ": " + 'Name: ' +
+                    "<a href='/users/" + keys[i] + "'>" + result[keys[i]].user + "</a>" + ' Email: ' + result[keys[i]].email + '<br />' + snippet.slice(0, 140) + '<br>');
                 console.log(result[keys[i]].user);
 
             }
