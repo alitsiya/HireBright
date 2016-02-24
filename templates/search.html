@@ -33,7 +33,7 @@ function searchQuery(evt) {
             for (var i = 0; i < keys.length; i++) {
                 snippet = result[keys[i]].resume
                 $('.results').append("<div id=" + keys[i] + " class='search-result'>" + (i + 1) + ": " + 'Name: ' +
-                    "<a href='/users/" + keys[i] + "'>" + result[keys[i]].user + "</a>" + ' Email: ' + result[keys[i]].email + '<br />' + snippet.slice(0, 140) + '<br>');
+                    "<a href='/users/" + keys[i] + "'>" + result[keys[i]].user + "</a>" + ' Email: ' + result[keys[i]].email + '<br />' + snippet.slice(0, 140) + '<br>' + 'Relevancy: ' + result[keys[i]].relevancy);
                 console.log(result[keys[i]].user);
 
             }

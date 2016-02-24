@@ -445,39 +445,28 @@ def search():
 
     #take data from ajax request and split it to multiply queries
     search_query = request.json['search_query'].lower().split(' ')
+    query = ''
+    for i in range(len(search_query)):
+        if i < len(search_query) - 1:
+            query = query + search_query[i] + ' &'
+        else:
+            query = query + search_query[i]
 
-    QUERY = """SELECT *, (SELECT ts_rank(to_tsvector(resume_string), to_tsquery('python'))) AS relevancy FROM resumes ORDER BY relevancy DESC
+    QUERY = """SELECT resume_id, (SELECT ts_rank(to_tsvector(resume_string), to_tsquery((:query)))) AS relevancy FROM resumes ORDER BY relevancy DESC
             """
-
-    cursor = db.session.execute(QUERY)
+    import pdb; pdb.set_trace()
+    cursor = db.session.execute(QUERY, {'query': query})
     results = cursor.fetchall()
-    # import pdb
-    # pdb.set_trace()
+
 
     print "\n\n\n\nRRRRRRR", results
-
-    results = []
     res_dict = {}
-    for s_query in search_query:
-        # select resume_id from resumes where (select to_tsvector(resumes.language::regconfig, resume_string) @@ to_tsquery('python')) = true;
-
-        # r = db.session.execute("select resume_id, (SELECT ts_rank(to_tsvector(resume_string), to_tsquery('python'))) AS relevancy from resumes ORDER BY relevancy DESC;").all()
-        # rs = r.fetchall()
-        # print "\n\n\n\nRRRRRRR", rs
-        # for r in rs:
-        #     print "\n\n\nrrrrr",r
-
-
-        result = Resume.query.filter(Resume.resume_string.like("%"+s_query+"%")).all()
-        print "\n\n\nRESULT:", results
-        results.extend(result)
-
-    for resume in set(results):
-
-        if res_dict.get(resume.user[0].user_id):
-            pass
+    for result in results:
+        if result[1] > 0.001:
+            resume = Resume.query.get(result[0])
+            res_dict[resume.user[0].user_id] = {'resume': resume.resume_text, 'user': resume.user[0].first_name + ' ' + resume.user[0].last_name, 'email': resume.user[0].email, 'relevancy': result[1]}
         else:
-            res_dict[resume.user[0].user_id] = {'resume': resume.resume_text, 'user': resume.user[0].first_name + ' ' + resume.user[0].last_name, 'email': resume.user[0].email}
+            pass
 
     return jsonify(res_dict)
 
