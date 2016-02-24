@@ -19,12 +19,22 @@ from socketio.mixins import RoomsMixin, BroadcastMixin
 
 # The socket.io namespace
 class ChatNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
+
+    def on_room_name(self, room_name):
+        print room_name
+
+
     def on_nickname(self, nickname):
+        # print "\n\n\nSESSION ROOM", session['email']
+        # print "\n\n\nSESSION ROOM", session['room'] 
         self.environ.setdefault('nicknames', []).append(nickname)
         self.socket.session['nickname'] = nickname
         self.broadcast_event('announcement', '%s has connected' % nickname)
         self.broadcast_event('nicknames', self.environ['nicknames'])
         # Just have them join a default-named room
+
+        # room_name = session['room']
+
         self.join('main_room')
 
     def on_user_message(self, msg):
@@ -40,9 +50,14 @@ app.secret_key = 'Shhhhhhhhh'
 @app.route('/')
 def index():
     """Homepage"""
-    
-    print "\n\n\n\n", session, '\n\n\n'
-    return render_template("homepage.html")
+
+    if session.get('user_type'):
+        if session['user_type'] == 'user':
+            return redirect('/view-status')
+        else:
+            return redirect('/data')
+    else:
+        return render_template("homepage.html")
 
 
 @app.route('/signin', methods=['GET'])
@@ -70,31 +85,28 @@ def sign_in():
     else:
         if existing_hr:
             if not bcrypt.check_password_hash(existing_hr.password, password):
-                print "\n Incorrect password\n\n"
                 flash("Incorrect password")
 
                 return redirect("/signin")
 
             else:
-                print "\n Logged in - SUCCSESS!!!"
                 session['email'] = email
+                session['user_type'] = 'recruiter'
                 flash("Logged in as recruiter %s %s" % (existing_hr.first_name, existing_hr.last_name))
 
                 return redirect("/data")
 
         if existing_user:
             if not bcrypt.check_password_hash(existing_user.password, password):
-                print "\n Incorrect password\n\n"
                 flash("Incorrect password")
 
                 return redirect("/signin")
 
             else:
-                print "\n Logged in - SUCCSESS!!!"
                 session['email'] = email
+                session['user_type'] = 'user'
                 flash("Logged in as applicant %s %s" % (existing_user.first_name, existing_user.last_name))
-                print "SESSION:\n\n\n\n\n\n", session
-                print "SESSION EMAIL\n\n\n\n\n\n", session["email"]
+
                 return redirect("/view-status")
 
 
@@ -131,20 +143,23 @@ def sign_up():
         db.session.commit()
         print "\n Recruiter Added to Database \n"
         session['email'] = email
+        session['user_type'] = 'recruiter'
         flash("%s %s has been signed up" % (first_name, last_name))
         return redirect("/data")
     else: 
         flash("Something went wrong")
-        return redirect("signup")
+        return redirect("/signup")
 
 
 @app.route('/logout')
 def sign_out():
     """Log out users"""
-    
+
     if session:
-        
+        print session['email']
+        print "\n\n\n\n", session['user_type']
         del session['email']
+        del session['user_type']
         flash("The user has logged out")
 
     return redirect("/")
@@ -178,11 +193,8 @@ def application_submit():
 
     #check if user already exists
     existing_user = User.query.filter(User.email == email).first()
-    print text_file
-    print "\n\n\n", existing_user, "\n\n\n"
     if existing_user:
         flash("User with that email already exists, use sign-in page to edit your application.")
-        print "\n\n\n", existing_user, "\n\n\n"
         return redirect('/signin')
 
     #checks if there is an attached file
@@ -212,6 +224,7 @@ def application_submit():
         #resume type for search
         resume_text = file_contents.translate(None, string.punctuation)
         resume_text = resume_text.strip().lower().replace('\n', ' ')
+
         print "\n\n\n PDF read SUCCESS"
 
     else:
@@ -257,6 +270,8 @@ def application_submit():
     text_file.close()
     if not session.get('email'):
         session['email'] = email
+        session['user_type'] = 'user'
+
     return redirect('/')
 
 
@@ -264,26 +279,29 @@ def application_submit():
 def render_view_status():
     """Renders view status page when user signed in"""
 
-    if session:
+    if session.get('user_type') == 'user':
+        print "\n\n\n\n", session.get('user_type')
         email = session['email']
 
         user = User.query.filter(User.email == email).first()
+        if user:
+            interview = Interview.query.filter(Interview.user_id==user.user_id).one()
+            return render_template("status.html", user=user, interview=interview)
+        else:
+            flash("You are not logged in or logged in as a recruiter")
+            return redirect("/")
 
-        interview = Interview.query.filter(Interview.user_id==user.user_id).one()
-        print user.interview
     else:
-
-        flash("You are not logged in")
+        flash("You are not logged in or logged in as a recruiter")
         return redirect("/")
-
-    return render_template("status.html", user=user, interview=interview)
+        
 
 
 @app.route('/data')
 def render_data():
     """Renders data page when recruiter signed in"""
 
-    if session:
+    if session.get('user_type') == 'recruiter':
         email = session['email']
         recruiter = Recruiter.query.filter(email == email).first()
         if recruiter:
@@ -291,7 +309,7 @@ def render_data():
 
             return render_template("data.html", users=users)
         else:
-            flash("You don't have permissions to view a content")
+            flash("You don't have permissions to view content")
             return redirect("/")
     else:
         flash("You are not logged in")
@@ -302,7 +320,7 @@ def render_data():
 def show_user_data(user_id):
     """Shows data for particular user """
 
-    if session:
+    if session.get('user_type') == 'recruiter':
         email = session['email']
         recruiter = Recruiter.query.filter(email == email).first()
         if recruiter:
@@ -416,7 +434,10 @@ def cancel_interview():
 def render_search():
     """Render search page"""
 
-    return render_template('search.html')
+    if session.get('user_type') == 'recruiter':
+        return render_template('search.html')
+    else:
+        return redirect('/')
 
 
 @app.route('/search', methods=['POST'])
@@ -467,10 +488,15 @@ def show_interviews():
             return redirect('/')
 
 
-@app.route('/tool')
-def render_tool():
-    """Renders pair programming tool"""
+@app.route('/tool/<path>')
+def render_tool(path):
+    """Renders pair programming tool """
 
+    if session.get('room'):
+        del session['room']
+    session['room'] = path
+    print "\n\n\nSESSION:", session['room']
+    print "\n\n\nPATH:", path
     return render_template('tool.html')
 
 

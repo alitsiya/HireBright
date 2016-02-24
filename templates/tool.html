@@ -5,10 +5,10 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/default.min.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js"></script>
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.6.1.min.js">
-    </script><script type="text/javascript" src="socket.io.js"></script>
+    </script><script type="text/javascript" src="/socket.io.js"></script>
     <script>    
 
-
+// The script is not my creation, it's coppied from example
 WEB_SOCKET_SWF_LOCATION = "/WebSocketMain.swf";
 WEB_SOCKET_DEBUG = true;
 
@@ -45,7 +45,6 @@ socket.on('error', function (e) {
 });
 
 function message (from, msg) {
-    // $('#lines').append($('<p>').append($('<b>').text(from), msg));
     $('#tool').html(msg);
 }
 
@@ -82,13 +81,13 @@ $(function () {
     <div id="nickname">
       <form id="set-nickname" class="wrap">
         <p>Please type in your nickname and press enter.</p>
-        <input id="nick">
-        <p id="nickname-err">Nickname already in use</p>
+        <input id="nick" value="{{ session['email']}}">
+        <p id="nickname-err" style="visibility: hidden">Nickname already in use</p>
     </form>
     </div>
-    <div id="connecting">
+<!--     <div id="connecting">
       <div class="wrap">Connecting to socket.io server</div>
-    </div>
+    </div> -->
     <div id="messages">
       <div id="nicknames"></div>
       <div id="lines"></div>
