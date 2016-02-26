@@ -40,7 +40,7 @@ function searchQuery(evt) {
 
                     if ((result[keys[j]].relevancy === rank[i]) && (inuse.indexOf(keys[j]) == -1)) {
                         $('.results').append("<div id=" + i + " class='search-result'>" + (i + 1) + ": " + 'Name: ' +
-                        "<a href='/users/" + keys[j] + "'>" + result[keys[j]].user + "</a>" + ' Email: ' + result[keys[j]].email + '<br />'+ result[keys[j]].snippet + '<br>' + 'Relevancy: ' + result[keys[j]].relevancy);
+                        "<a href='/users/" + keys[j] + "'>" + result[keys[j]].user + "</a>" + ' Email: ' + result[keys[j]].email + '<br />'+ result[keys[j]].snippet + '<br>' + 'Relevancy: ' + result[keys[j]].relevancy+ '<br></div>');
                         inuse.push(keys[j]);
 
                     break;   //break if one result for this key has been shown
