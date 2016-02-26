@@ -455,8 +455,7 @@ def search():
     QUERY = """SELECT resume_id, (SELECT ts_rank(to_tsvector(resume_string), to_tsquery((:query)))) AS relevancy FROM resumes ORDER BY relevancy DESC
             """
 
-    QUERY_SNIPPET = """SELECT ts_headline('english', (:text), to_tsquery((:query)), 
-                       MaxWords=140, MinWords=5, ShortWord=3, HighlightAll=FALSE, MaxFragments=4, FragmentDelimiter=" ... " )"""
+    QUERY_SNIPPET = """SELECT ts_headline('english', (:text), to_tsquery((:query)), 'MaxWords=30, MinWords=5, ShortWord=3, HighlightAll=FALSE, MaxFragments=3, FragmentDelimiter=" ... " ' )"""
     # import pdb; pdb.set_trace()
     cursor = db.session.execute(QUERY, {'query': query})
     results = cursor.fetchall()
@@ -472,12 +471,12 @@ def search():
                 snippet = cursor.fetchall()
                 res = ''
                 for item in snippet:
-                    res += str(item)
+                    res += str(item[0])
                 print "\n\nSNIPPET: ", res
                 print "\n\nTYPE:", type(snippet)
                 print "\n\nTYPE:", type(snippet[0])
 
-                res_dict[resume.user[0].user_id] = {'snippet':str(snippet[0]), 'resume': resume.resume_text, 'user': resume.user[0].first_name + ' ' + resume.user[0].last_name, 'email': resume.user[0].email, 'relevancy': result[1]}
+                res_dict[resume.user[0].user_id] = {'snippet':str(res), 'resume': resume.resume_text, 'user': resume.user[0].first_name + ' ' + resume.user[0].last_name, 'email': resume.user[0].email, 'relevancy': result[1]}
         else:
             pass
         print "\n\n\nRES KEYS:", res_dict.keys()
