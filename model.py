@@ -55,16 +55,13 @@ class Resume(db.Model):
 
     __tablename__ = "resumes"
     resume_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    resume_text = db.Column(db.String(500000), nullable=False)
-    resume_string = db.Column(db.String(500000), nullable=False)
-
-    
+    resume_text = db.Column(db.String(50000), nullable=False)
+    resume_string = db.Column(db.String(50000), nullable=False)
 
     def __repr__(self):
         """Show resume's info"""
         return "<resume_id=%s>" % (self.resume_id)
 
-# resume_search = Index('resume_search_idx', resumes.c.resume_string, postgresql_using='gin')
 
 class Tool(db.Model):
     """Pair-programming tool table"""

@@ -24,23 +24,32 @@ function searchQuery(evt) {
         data: JSON.stringify(data, null, '\t'),
         contentType: 'application/json;charset=UTF-8',
         success: function(result) {
-            console.log(result);
-            console.log(Object.keys(result));
-            console.log(Object.keys(result).length);
 
             var keys = Object.keys(result);
             $('.results').text(keys.length + ' results was found');
-            for (var i = 0; i < keys.length; i++) {
-                snippet = result[keys[i]].resume
-                $('.results').append("<div id=" + keys[i] + " class='search-result'>" + (i + 1) + ": " + 'Name: ' +
-                    "<a href='/users/" + keys[i] + "'>" + result[keys[i]].user + "</a>" + ' Email: ' + result[keys[i]].email + '<br />' + snippet.slice(0, 140) + '<br>' + 'Relevancy: ' + result[keys[i]].relevancy);
-                console.log(result[keys[i]].user);
+            
+            var rank = [];
+            var inuse = [];
+            for (var i = 0; i < keys.length; i++) { //makes a list of all relevancy values
+                rank.push(result[keys[i]].relevancy)
+            }
+            rank.sort(function(a,b){return b - a});  //sort list starting from biggest number
 
+            for (var i=0; i < rank.length; i++) {
+                for (var j=0; j < keys.length; j++) {
+
+                    if ((result[keys[j]].relevancy === rank[i]) && (inuse.indexOf(keys[j]) == -1)) {
+                        $('.results').append("<div id=" + i + " class='search-result'>" + (i + 1) + ": " + 'Name: ' +
+                        "<a href='/users/" + keys[j] + "'>" + result[keys[j]].user + "</a>" + ' Email: ' + result[keys[j]].email + '<br />'+ result[keys[j]].snippet + '<br>' + 'Relevancy: ' + result[keys[j]].relevancy);
+                        inuse.push(keys[j]);
+
+                    break;   //break if one result for this key has been shown
+                    }
+                }
             }
         }
     });
 
-    console.log("Finished sending AJAX");
 }
 $("#form-search").on("submit", searchQuery);
 </script>
