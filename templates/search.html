@@ -1,4 +1,17 @@
-{% extends 'base.html' %} {% block title %} Search {% endblock %} {% block content %}
+{% extends 'base.html' %} {% block title %} Search {% endblock %} 
+{% block morehead %}
+<style>
+    .relev {
+     color: #888888; 
+     font-size: 9px;
+}
+    .snippet {
+        background-color: #F8F8F8 ;
+        color: #404040;
+}
+</style>
+{% endblock %}
+{% block content %}
 <div class='container-fluid'>
     <h1>Search for candidate</h1>
     <form class="form-search" id="form-search">
@@ -40,7 +53,7 @@ function searchQuery(evt) {
 
                     if ((result[keys[j]].relevancy === rank[i]) && (inuse.indexOf(keys[j]) == -1)) {
                         $('.results').append("<div id=" + i + " class='search-result'>" + (i + 1) + ": " + 'Name: ' +
-                        "<a href='/users/" + keys[j] + "'>" + result[keys[j]].user + "</a>" + ' Email: ' + result[keys[j]].email + '<br />'+ result[keys[j]].snippet + '<br>' + 'Relevancy: ' + result[keys[j]].relevancy+ '<br></div>');
+                        "<a href='/users/" + keys[j] + "'>" + result[keys[j]].user + "</a>" + ' Email: ' + result[keys[j]].email + '<br /><div class="snippet">'+ result[keys[j]].snippet + '</div>' + '<div class="relev">Relevancy: ' + result[keys[j]].relevancy+ '</div><br></div>');
                         inuse.push(keys[j]);
 
                     break;   //break if one result for this key has been shown

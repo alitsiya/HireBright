@@ -1,6 +1,24 @@
 {% extends 'base.html' %}
+{% block title %}HR tool for interviewing Software Engineers
+{% endblock %}
+  {% block morehead %}
+    <style>
+  body {
+    background-image: url('img/collage-2016-02-26.jpg');
+    background-position: center;
+    text-align: center;
+    position: relative;
+    width: 100%;
+    background-size: cover;
+  }
+  header {
+    min-height: 100%;
+  }
+  </style>
+  {% endblock %}
 {% block content %}
-
+<header>
 <h1>Welcome to HireBright</h1>
-
+<p>Find your perfect Engineer</p>
+</header>
 {% endblock %}

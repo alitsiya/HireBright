@@ -174,7 +174,8 @@ def application_render():
 @app.route('/submit-application', methods=["POST"])
 def application_submit():
     """When user clicks to submit button, application goes to database and inserts
-    user, resume, interview
+    user, resume, interview.
+    It doesn't chack all fields' input for now.
     """
 
     email = request.form.get('email')
@@ -276,7 +277,10 @@ def application_submit():
 
 @app.route('/view-status')
 def render_view_status():
-    """Renders view status page when user signed in"""
+    """Renders view status page when user signed in
+    
+    Page for applicant to view submitted info and interview status 
+    """
 
     if session.get('user_type') == 'user':
         print "\n\n\n\n", session.get('user_type')
@@ -298,7 +302,10 @@ def render_view_status():
 
 @app.route('/data')
 def render_data():
-    """Renders data page when recruiter signed in"""
+    """Renders data page when recruiter signed in
+    
+    Shows list of applicants' names and interview status, also has links to individual applicant profile
+    """
 
     if session.get('user_type') == 'recruiter':
         email = session['email']
@@ -317,7 +324,12 @@ def render_data():
 
 @app.route('/users/<int:user_id>')
 def show_user_data(user_id):
-    """Shows data for particular user """
+    """Shows data for particular user 
+    
+    Renders page with info about user, his/her github profile data if GitHub nickname provided,
+    Allows to schedule or cancel interview depending on interview status,
+    Sends sms to phonenumber via Twilio API when interview is scheduled
+    """
 
     if session.get('user_type') == 'recruiter':
         email = session['email']
@@ -403,9 +415,10 @@ def put_interview_db():
     account_sid = os.environ['TWILIO_ACCOUNT_SID']
     auth_token = os.environ['TWILIO_AUTH_TOKEN']
     client = TwilioRestClient(account_sid, auth_token)
+    user_phone = user.phone
 
-    message = client.messages.create(to="+14252143104", from_=os.environ['TWILIO_NUMBER'],
-                                     body="Your interview with HireBright scheduled on %s " % (str(date_object)),
+    message = client.messages.create(to=user_phone, from_=os.environ['TWILIO_NUMBER'],
+                                     body="%s, your interview with HireBright scheduled on %s " % (user.first_name, str(date_object)),
                                      )
 
     print '\n\n\nSuccesss!!!\n\n\n'
@@ -441,7 +454,13 @@ def render_search():
 
 @app.route('/search', methods=['POST'])
 def search():
-    """Search using inverted index for keywords"""
+    """Search using inverted index for keywords
+
+    When user search for keywords on search page it makes ajax call with a keywords in it. 
+    This makes a query to resume_string colomn and converts it to inverted index by 
+    built in method to_tsvector and returns resume_id and rank of the document.
+
+    """
 
     #take data from ajax request and split it to multiply queries
     search_query = request.json['search_query'].lower().split(' ')
@@ -452,11 +471,12 @@ def search():
         else:
             query = query + search_query[i]
 
+    # query that returns id and rank, see page http://rachbelaid.com/postgres-full-text-search-is-good-enough/
     QUERY = """SELECT resume_id, (SELECT ts_rank(to_tsvector(resume_string), to_tsquery((:query)))) AS relevancy FROM resumes ORDER BY relevancy DESC
             """
-
+    # query for snippet with max fragment length 3, http://www.postgresql.org/docs/9.1/static/textsearch-controls.html
     QUERY_SNIPPET = """SELECT ts_headline('english', (:text), to_tsquery((:query)), 'MaxWords=30, MinWords=5, ShortWord=3, HighlightAll=FALSE, MaxFragments=3, FragmentDelimiter=" ... " ' )"""
-    # import pdb; pdb.set_trace()
+    
     cursor = db.session.execute(QUERY, {'query': query})
     results = cursor.fetchall()
 
@@ -464,7 +484,7 @@ def search():
     for result in results:
         if result[1] > 0.001:
             resume = Resume.query.get(result[0])
-            
+
             if resume.user:
                 r_text = resume.resume_text
                 cursor = db.session.execute(QUERY_SNIPPET, {'query': query, 'text': r_text})
@@ -472,20 +492,15 @@ def search():
                 res = ''
                 for item in snippet:
                     res += str(item[0])
-                print "\n\nSNIPPET: ", res
-                print "\n\nTYPE:", type(snippet)
-                print "\n\nTYPE:", type(snippet[0])
 
-                res_dict[resume.user[0].user_id] = {'snippet':str(res), 'resume': resume.resume_text, 'user': resume.user[0].first_name + ' ' + resume.user[0].last_name, 'email': resume.user[0].email, 'relevancy': result[1]}
-        else:
-            pass
-        print "\n\n\nRES KEYS:", res_dict.keys()
+                res_dict[resume.user[0].user_id] = {'snippet': str(res), 'resume': resume.resume_text, 'user': resume.user[0].first_name + ' ' + resume.user[0].last_name, 'email': resume.user[0].email, 'relevancy': result[1]}
+
     return jsonify(res_dict)
 
 
 @app.route('/interviews')
 def show_interviews():
-    """"""
+    """Renders page with scheduled interviews for particular recruiter if he/she logged in"""
 
     if session:
         email = session.get('email')
@@ -519,6 +534,8 @@ def render_tool(path):
 
 @app.route("/socket.io/<path:path>")
 def run_socketio(path):
+    """Makes socket connection for particular namespace """
+
     socketio_manage(request.environ, {'': ChatNamespace})
 
 
@@ -526,7 +543,7 @@ if __name__ == "__main__":
 
     # We have to set debug=True here, since it has to be True at the point
     # that we invoke the DebugToolbarExtension
-    # app.debug = True
+    app.debug = True
     DebugToolbarExtension(app)
 
     connect_to_db(app)
@@ -543,7 +560,4 @@ if __name__ == "__main__":
     from socketio.server import SocketIOServer
     SocketIOServer(('0.0.0.0', 5000), app,
         resource="socket.io", policy_server=False).serve_forever()
-
-    # Use the DebugToolbar
-
 

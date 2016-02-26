@@ -5,7 +5,8 @@
     <link href="/styles.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>HireBright - {% block title %}HR tool for interviewing Software Engineers{% endblock %}</title>
-  {% block morehead %}{% endblock %}
+  {% block morehead %}
+  {% endblock %}
   <script src="https://code.jquery.com/jquery-2.1.1.js"></script>
 </head>
 
@@ -24,22 +25,22 @@
       </div>
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
-      <ul class="nav navbar-nav">
+      
       {% if session.get('user_type') %}
           {% if session['user_type'] == 'recruiter' %}
+      <ul class="nav navbar-nav">
         <li><a href="/data">All applicants</a></li>
       </ul>
-            <ul class="nav navbar-nav">
+      <ul class="nav navbar-nav">
         <li><a href="/interviews">Interviews</a></li>
       </ul>
-            <ul class="nav navbar-nav">
+      <ul class="nav navbar-nav">
         <li><a href="/search">Search</a></li>
       </ul>
-      </ul>
-        {% endif %}
+          {% endif %}
       {% else %}
             
-            <ul class="nav navbar-nav">
+      <ul class="nav navbar-nav">
         <li><a href="/submit-application">Submit Application</a></li>
       </ul>
       {% endif %}
@@ -66,7 +67,8 @@
     {% endfor %}
     </ul>
 
-  {% block content %} {% endblock %}
+  {% block content %}
+   {% endblock %}
 </div>
 <script type="text/javascript">
   setTimeout(function(){$('#flash').text('')}, 2000)
