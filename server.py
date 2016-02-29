@@ -524,12 +524,12 @@ def show_interviews():
 def render_tool(path):
     """Renders pair programming tool """
 
-    if session.get('room'):
-        del session['room']
-    session['room'] = path
-    print "\n\n\nSESSION:", session['room']
-    print "\n\n\nPATH:", path
-    return render_template('tool.html')
+    # if session.get('room'):
+    #     del session['room']
+    # session['room'] = path
+    # print "\n\n\nSESSION:", session['room']
+    # print "\n\n\nPATH:", path
+    return render_template('test-tool.html')
 
 
 @app.route("/socket.io/<path:path>")
@@ -543,7 +543,7 @@ if __name__ == "__main__":
 
     # We have to set debug=True here, since it has to be True at the point
     # that we invoke the DebugToolbarExtension
-    app.debug = True
+    # app.debug = True
     DebugToolbarExtension(app)
 
     connect_to_db(app)

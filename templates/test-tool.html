@@ -1,0 +1,187 @@
+<!doctype html>
+<html>
+<head>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/styles.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HireBright -  Pair programming tool </title>
+  
+    <link href="/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.6.1.min.js">
+    </script>
+    <script type="text/javascript" src="/socket.io.js"></script>
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+    <script>    
+
+// The script is not my creation, it's coppied from example
+WEB_SOCKET_SWF_LOCATION = "/WebSocketMain.swf";
+WEB_SOCKET_DEBUG = true;
+
+// socket.io specific code
+var socket = io.connect();
+
+socket.on('connect', function () {
+    $('#chat').addClass('connected');
+});
+
+socket.on('announcement', function (msg) {
+    $('#lines').append($('<p>').append($('<em>').text(msg)));
+});
+
+socket.on('nicknames', function (nicknames) {
+    $('#nicknames').empty().append($('<span>Online: </span>'));
+    for (var i in nicknames) {
+    $().append($('<b>').text(nicknames[i]));
+    }
+});
+
+socket.on('msg_to_room', message);
+socket.on('reconnect', function () {
+    $('#lines').remove();
+    message('System', 'Reconnected to the server');
+});
+
+socket.on('reconnecting', function () {
+    message('System', 'Attempting to re-connect to the server');
+});
+
+socket.on('error', function (e) {
+    message('System', e ? e : 'A unknown error occurred');
+});
+
+function message (from, msg) {
+    $('#tool').html(msg);
+}
+
+// dom manipulation
+$(function () {
+    $('#set-nickname').submit(function (ev) {
+        socket.emit('nickname', $('#nick').val(), function (set) {
+            if (!set) {
+                clear();
+                return $('#chat').addClass('nickname-set');
+            }
+            $('#nickname-err').css('visibility', 'visible');
+        });
+
+        socket.emit('room_name', window.location.pathname.split('/')[2]);
+
+        return false;
+    });
+
+    $('#tool').keyup( function () {
+      // message('me', $('#tool').val());
+      socket.emit('user message', $('#tool').html());
+      $('#lines').get(0).scrollTop = 10000000;
+      return false;
+    });
+
+    function clear () {
+        $('#message').val('').focus();
+    };
+});
+    </script>
+
+
+  <script src="https://code.jquery.com/jquery-2.1.1.js"></script>
+</head>
+
+<body>
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar">Login</span>
+        <span class="icon-bar">Signup</span>
+        <span class="icon-bar">Logout</span>                        
+      </button>
+
+      <div class="navbar-header">
+        <a class="navbar-brand" href="/">HireBright</a>
+      </div>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      
+      
+          
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+        
+        <li><a href="/logout">Logout</a></li>
+
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+<div class="container">
+    <ul id="flash">
+    
+    </ul>
+
+  
+  <div id="chat">
+    <div id="nickname">
+      <form id="set-nickname" class="wrap">
+        <p>Please type in your nickname and press enter.</p>
+        <input id="nick" value="js@somedomain.com">
+        <p id="nickname-err" style="visibility: hidden">Nickname already in use</p>
+    </form>
+    </div>
+<!--     <div id="connecting">
+      <div class="wrap">Connecting to socket.io server</div>
+    </div> -->
+    <div id="messages">
+      <div id="nicknames"></div>
+      <div id="lines"></div>
+    </div>
+    
+  </div>
+</div>
+
+<div class="container-fluid">
+    <code class="python"><pre><div class="row-fluid">
+        <div class="col-md-1" id="numbers" style="text-align: right; text-color: #808080"><br>1</div>
+        <div class="col-xs-12 col-md-10"><div id="tool" name="tool" contentEditable="true">#Write your Python code here</div>
+    </div></div></pre></code>
+</div>
+<script>
+  $("#tool").keydown(function(e) {
+    if (e.keyCode === 13) {
+      var x = $("#numbers").html();
+      x= x.split("<br>");
+      var z = x.length-1;
+      var num = (parseInt(x[z])+1)
+      $("#numbers").append("<br>"+ num);
+    };
+
+    if ((e.keyCode === 46) || (e.keyCode === 8)) {
+
+      var ll = $("#numbers").html();
+      var rl = $("#tool").html();
+      ll = ll.split('<br>');
+      rl = rl.split('</div>');
+      if (rl.length < ll.length-1) {
+        var res = '';
+        $("#numbers").text('');
+        for (var i=0; i < rl.length; i++) {
+          res += '<br>' + (i+1);
+        }
+        $("#numbers").append(res);
+      }
+    }
+});
+
+</script>
+<script type="text/javascript">
+  setTimeout(function(){$('#flash').text('')}, 2000)
+</script>
+</body>
+</html>
