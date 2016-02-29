@@ -1,22 +1,54 @@
-import os
-import flaskr
 import unittest
-import tempfile
+from server import app, create_url, session, get_user_github_profile
 
-class FlaskrTestCase(unittest.TestCase):
+class FlaskTests(unittest.TestCase):
 
     def setUp(self):
-        self.db_fd, flaskr.app.config['DATABASE'] = tempfile.mkstemp()
-        self.app = flaskr.app.test_client()
-        flaskr.init_db()
+        self.client = app.test_client()
+        app.config['TESTING'] = True
 
-    def tearDown(self):
-        os.close(self.db_fd)
-        os.unlink(flaskr.app.config['DATABASE'])
+    # def tearDown(self):
 
-    def test_empty_db(self):
-        rv = self.app.get('/')
-        assert 'No entries here so far' in rv.data
+    def test_create_url(self):
+        # tests function that generates random url of length 10
+        result = create_url()
+        self.assertEqual(len(result), 10)
+
+    def test_home(self):
+        # integration tests
+        result = self.client.get('/')
+        self.assertEqual(result.status_code, 200)
+        self.assertIn('text/html', result.headers['Content-Type'])
+        self.assertIn('<h1>Welcome to HireBright</h1>', result.data)
+
+    def test_data(self):
+        """if no cookies should return 302"""
+        result = self.client.get('/data')
+        self.assertEqual(result.status_code, 302)
+
+    def test_signin(self):
+        result = self.client.get('/signin')
+        self.assertEqual(result.status_code, 200)
+
+    def test_data_session(self):
+        """tests access to /data witout session"""
+        with app.test_client() as c:
+            result = c.get('/data')
+            assert session.get('user_type') is None
+
+    def test_submit_app(self):
+        """test status code for /submit-application"""
+
+        result = self.client.get('/submit-application')
+        self.assertEqual(result.status_code, 200)
+
+    def test_github_json(self):
+        """Test that checks if GitHub API returns data for existing user"""
+
+        result = get_user_github_profile('alitsiya')
+        self.assertEqual(result['name'], "Alitsiya Yusupova")
 
 if __name__ == '__main__':
+    # If called like a script, run our tests
+
     unittest.main()

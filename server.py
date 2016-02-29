@@ -321,14 +321,30 @@ def render_data():
         flash("You are not logged in")
         return redirect("/")
     
+def get_user_github_profile(user_login):
+    d = None
+    try:
+        req = urllib2.Request('https://api.github.com/users/'+user_login, None, {"Authorization": 'token '+os.environ['GITHUB_AUTH_TOKEN']})
+        github_data = urllib2.urlopen(req).read()
+
+        json_acceptable_string = github_data.replace("'", "\"")
+
+        d = json.loads(json_acceptable_string)
+        return d
+    except IOError as e:
+        print "I/O error({0}): {1}".format(e.errno, e.strerror)
+    except ValueError:
+        print "Could not convert data to a dictionary"
+    except:
+        print "Unexpected error:"
+        raise
+
 
 @app.route('/users/<int:user_id>')
 def show_user_data(user_id):
-    """Shows data for particular user 
+    """Shows data for particular user
     
-    Renders page with info about user, his/her github profile data if GitHub nickname provided,
-    Allows to schedule or cancel interview depending on interview status,
-    Sends sms to phonenumber via Twilio API when interview is scheduled
+    Renders page with info about user, his/her github profile data if GitHub nickname provided
     """
 
     if session.get('user_type') == 'recruiter':
@@ -339,25 +355,7 @@ def show_user_data(user_id):
             interview = Interview.query.filter(Interview.user_id==user.user_id).first()
             recruiters = Recruiter.query.all()
 
-            #may want to grub user github profile
-            d = None
-            try:
-                req = urllib2.Request('https://api.github.com/users/'+user.github, None, {"Authorization": 'token '+os.environ['GITHUB_AUTH_TOKEN']})
-                github_data = urllib2.urlopen(req).read()
-
-                json_acceptable_string = github_data.replace("'", "\"")
-
-                d = json.loads(json_acceptable_string)
-                print "\n\n\nkeys", d.keys()
-
-                print "\n\n\nGITHUB", d
-            except IOError as e:
-                print "I/O error({0}): {1}".format(e.errno, e.strerror)
-            except ValueError:
-                print "Could not convert data to a dictionary"
-            except:
-                print "Unexpected error:"
-                raise
+            d = get_user_github_profile(user.github)
 
             return render_template("user.html", user=user, interview=interview, recruiters=recruiters, github_data=d)
         else:
@@ -380,7 +378,10 @@ def create_url():
 @app.route('/schedule_interview', methods=["POST"])
 def put_interview_db():
     """When on page users/<int> 'Schedule interview' form submitts it sends ajax call that
-        updates user interview table in db.
+        updates user interview table in db.  
+
+    Allows to schedule or cancel interview depending on interview status,
+    Sends sms to phonenumber via Twilio API when interview is scheduled
     """
 
     date = request.json['interview_date']    #01/29/2016 format
