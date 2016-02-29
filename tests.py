@@ -48,6 +48,41 @@ class FlaskTests(unittest.TestCase):
         result = get_user_github_profile('alitsiya')
         self.assertEqual(result['name'], "Alitsiya Yusupova")
 
+
+from selenium import webdriver
+from time import sleep
+class TestSubmitForm(unittest.TestCase):
+
+    def setUp(self):
+        self.browser = webdriver.Firefox()
+
+    def test_submission_form(self):
+        self.browser.get('http://localhost:5000')
+        sleep(5)
+        self.browser.get('http://localhost:5000/submit-application')
+        assert self.browser.title == 'HireBright - Submit your application'
+        x = self.browser.find_element_by_name('first_name')
+        x.send_keys("Alitsiya")
+        y = self.browser.find_element_by_name('last_name')
+        y.send_keys("Yusupova")
+        y = self.browser.find_element_by_name('email')
+        y.send_keys("ay@somedomain.com")
+        p = self.browser.find_element_by_name('password')
+        p.send_keys("qwerty")
+        t = self.browser.find_element_by_name('phone')
+        t.send_keys("+14252143104")
+        l = self.browser.find_element_by_name('location')
+        l.send_keys("San Francisco, CA")
+        ln = self.browser.find_element_by_name('linkedin')
+        ln.send_keys("alitsiyayusupova")
+        ps = self.browser.find_element_by_name('position')
+        ps.send_keys("Software Engineer")
+        g = self.browser.find_element_by_name('github')
+        g.send_keys("alitsiya")
+        f = self.browser.find_element_by_name('file')
+        f.send_keys("~/HackBright/project/files/jay_smith.txt")
+
+
 if __name__ == '__main__':
     # If called like a script, run our tests
 
