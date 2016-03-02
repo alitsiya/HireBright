@@ -10,7 +10,7 @@ from flask import Flask, render_template, redirect, request, flash, session, jso
 from flask_debugtoolbar import DebugToolbarExtension
 from flask.ext.bcrypt import Bcrypt #for securing passwords
 from twilio.rest import TwilioRestClient
-
+import re #for escaping non ascii chars
 from model import Recruiter, User, Resume, Tool, Opening, Status, Interview, connect_to_db, db
 
 from socketio import socketio_manage
@@ -188,7 +188,7 @@ def application_submit():
     linkedin = request.form.get('linkedin')
     github = request.form.get('github')
     position = request.form.get('position')
-    salary = request.form.get('salary')
+    salary = request.form.get('salary') or None
     text_file = request.files['file']
 
     #check if user already exists
@@ -210,9 +210,10 @@ def application_submit():
         f = os.popen('pdftotext ./files/RESUME.pdf -')
         file_contents = f.read()
         print type(file_contents)
-        
+        file_contents = re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f-\xff]', '', file_contents)
+        file_contents = file_contents.replace('\n', '<br>')
         resume_text = file_contents.translate(None, string.punctuation)
-        resume_text = resume_text.strip().lower().replace('\n', ' ')
+        resume_text = resume_text.strip().lower().replace('<br>', ' ')
 
         print "\n\n\n PDF read SUCCESS"
 
@@ -220,10 +221,11 @@ def application_submit():
         #resume for display
         file_contents = text_file.stream.read().decode("utf-8")
         file_contents = file_contents.replace(u'\u2019', u'\'').encode('ascii', 'ignore')
+        file_contents = file_contents.replace('\n', '<br>')
 
         #resume type for search
         resume_text = file_contents.translate(None, string.punctuation)
-        resume_text = resume_text.strip().lower().replace('\n', ' ')
+        resume_text = resume_text.strip().lower().replace('<br>', ' ')
 
         print "\n\n\n PDF read SUCCESS"
 
@@ -275,6 +277,27 @@ def application_submit():
     return redirect('/')
 
 
+@app.route('/delete-account', methods=["POST"])
+def delete_user_account():
+    """Delete user when on user profile page for demo"""
+
+    email = session['email']
+
+    print "\n\n", email
+    user = User.query.filter_by(email=email).one()
+    Interview.query.filter_by(user_id=user.user_id).delete()
+    Resume.query.filter_by(resume_id=user.resume_id).delete()
+    User.query.filter_by(email=email).delete()
+
+    db.session.commit()
+    del session['email']
+    del session['user_type']
+    flash("Your account was successfully deleted from database")
+    return redirect('/')
+
+
+
+
 @app.route('/view-status')
 def render_view_status():
     """Renders view status page when user signed in
@@ -320,7 +343,8 @@ def render_data():
     else:
         flash("You are not logged in")
         return redirect("/")
-    
+
+
 def get_user_github_profile(user_login):
     d = None
     try:
@@ -460,7 +484,6 @@ def search():
     When user search for keywords on search page it makes ajax call with a keywords in it. 
     This makes a query to resume_string colomn and converts it to inverted index by 
     built in method to_tsvector and returns resume_id and rank of the document.
-
     """
 
     #take data from ajax request and split it to multiply queries

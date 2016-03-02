@@ -40,10 +40,10 @@ class User(db.Model):
     github = db.Column(db.String(20))
     position = db.Column(db.String(30))
     salary = db.Column(db.Integer)
-    resume_id = db.Column(db.Integer, db.ForeignKey('resumes.resume_id'))
+    resume_id = db.Column(db.Integer, db.ForeignKey('resumes.resume_id', ondelete='CASCADE'))
     time_of_submission = db.Column(db.DateTime, default=datetime.now, nullable=False)
 
-    resume = db.relationship('Resume', backref=db.backref("user", order_by=resume_id))
+    resume = db.relationship('Resume', backref=db.backref("user", order_by=resume_id, cascade="all, delete"), cascade="all, delete", cascade_backrefs=True)
 
     def __repr__(self):
         """Show candidate's info"""
@@ -106,13 +106,13 @@ class Interview(db.Model):
 
     __tablename__ = "interviews"
     interview_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id', ondelete='CASCADE'), nullable=False)
     recruiter_id = db.Column(db.Integer, db.ForeignKey('recruiters.recruiter_id'))
     status_id = db.Column(db.Integer, db.ForeignKey('statuses.status_id'), nullable=False)
     link_id = db.Column(db.Integer, db.ForeignKey('tools.link_id'))
     interview_date = db.Column(db.DateTime)
 
-    user = db.relationship('User', backref=db.backref("interview", order_by=user_id))
+    user = db.relationship('User', backref=db.backref("interview", order_by=user_id, cascade="all, delete", cascade_backrefs=True), cascade="all", cascade_backrefs=True)
     recruiter = db.relationship('Recruiter', backref=db.backref("interview", order_by=recruiter_id))
     status = db.relationship('Status', backref=db.backref("interview", order_by=status_id))
     tool = db.relationship('Tool', backref=db.backref("interview", order_by=link_id))

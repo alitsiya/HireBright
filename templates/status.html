@@ -27,10 +27,22 @@
         </div>
         <div class="col-xs-12 col-md-8">
             <h3>Resume:</h3>
-            <br>{{ user.resume.resume_text }}
+            <br><div id="resume"></div>
         </div>
+        <form action="/delete-account" method="POST">
+        <button>Delete account</button>
     </div>
 </div>
 <br>
 <br>
+<script>
+$( document ).ready(function() {
+    var string = '{{ user.resume.resume_text }}';
+    string = string.split("&amp;").join('&');
+    string = string.split("&gt;").join('>');
+    string = string.split("&lt;").join('<');
+    $('#resume').html(string);
+});
+
+</script>
 {% endif %} {% endblock %}

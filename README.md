@@ -11,25 +11,25 @@
     Clone repository
 
     Create a virtual environment for the project 
-    ```$ virtualenv env```
+    ``` $ virtualenv env ```
 
     Activate the environment 
-    ```$ source env/bin/activate```
+    ``` $ source env/bin/activate ```
 
 ##Install requirements
 
-    ```$ pip install -r requirements.txt```
+    ``` $ pip install -r requirements.txt ```
     
     In order to access Twilio functionality, you should have twilio API keys and store them in secrets.sh file.
 
     Type in command line 
-    ```source secrets.sh```
+    ``` source secrets.sh ```
      for your app to have access to keys
 
     To be able to submit pdf files on "Submit Application" page, make sure your machine has 'pdftotext' or 'brew' it to you Mac.
 
     From the command line of the terminal, run 
-    ```$ python server.py```
+    ``` $ python server.py ```
 
     In a browser window, type localhost:5000 to access the home page
 
@@ -44,7 +44,7 @@ For report:
 
 #Usage
 #Tech Stack
-Python, Flask, Socket, AJAX, JSON, HTML, CSS, PostgreSQL Full Text Search
+Python, Flask, Socket, JavaScript, AJAX/JSON, HTML, CSS, SQLAlchemy, PostgreSQL Full Text Search, Bootstrap
 
 #APIs Used
 Twilio API

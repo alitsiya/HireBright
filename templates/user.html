@@ -186,12 +186,23 @@
         <div class="col-xs-12 col-md-8">
             <h3>Resume:</h3>
             <br>
-            <div id="resume"> {{ user.resume.resume_text }}</div>
+            <div id="resume"></div>
         </div>
     </div>
     {% endif %}
 </div>
 <!-- Show or hide interview info or schedule interview -->
+<script>
+$( document ).ready(function() {
+    var string = '{{ user.resume.resume_text }}';
+    // string = string.replace("&amp;", '&').replace("&gt;", '>').replace("&lt;", '<');
+    string = string.split("&amp;").join('&');
+    string = string.split("&gt;").join('>');
+    string = string.split("&lt;").join('<');
+    $('#resume').html(string);
+});
+
+</script>
 <script>
 {% if interview.interview_date %}
     $('#nointerview').toggle(); 
