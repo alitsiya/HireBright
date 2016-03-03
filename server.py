@@ -20,11 +20,6 @@ from socketio.mixins import RoomsMixin, BroadcastMixin
 # The socket.io namespace
 class ChatNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
 
-    # def on_room_name(self, url):
-    #     self.environ.setdefault('room_name', []).append(url)
-    #     print "\n\n\nURL", url
-
-
     def on_nickname(self, nickname):
 
         self.environ.setdefault('nicknames', []).append(nickname)
