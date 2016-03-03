@@ -73,6 +73,14 @@ class FlaskTests(unittest.TestCase):
         result = self.client.get('/signin')
         self.assertEqual(result.status_code, 200)
 
+    def test_signup(self):
+        result = self.client.get('/signup')
+        self.assertEqual(result.status_code, 200)
+
+    def test_logout(self):
+        result = self.client.get('/logout')
+        self.assertEqual(result.status_code, 302)
+
     def test_data_session(self):
         """tests access to /data witout session"""
         with app.test_client() as c:
@@ -95,7 +103,7 @@ class FlaskTests(unittest.TestCase):
 from selenium import webdriver
 from time import sleep
 class TestSubmitForm(unittest.TestCase):
-    """This test helps automaticly fill out form on submit-application page for Demo"""
+    """This test helps automaticly fill out a form on submit-application page for Demo"""
 
     def setUp(self):
         self.browser = webdriver.Firefox()
@@ -130,6 +138,5 @@ class TestSubmitForm(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    # If called like a script, run our tests
 
     unittest.main()

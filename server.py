@@ -210,10 +210,10 @@ def application_submit():
         f = os.popen('pdftotext ./files/RESUME.pdf -')
         file_contents = f.read()
         print type(file_contents)
-        file_contents = re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f-\xff]', '', file_contents)
+        file_contents = re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f-\xff]', ' ', file_contents)
         file_contents = file_contents.replace('\n', '<br>')
         resume_text = file_contents.translate(None, string.punctuation)
-        resume_text = resume_text.strip().lower().replace('<br>', ' ')
+        resume_text = resume_text.strip().lower().replace('brbr', ' ')
 
         print "\n\n\n PDF read SUCCESS"
 
@@ -224,7 +224,7 @@ def application_submit():
         file_contents = file_contents.replace('\n', '<br>')
 
         #resume type for search
-        resume_text = file_contents.translate(None, string.punctuation)
+        resume_text = file_contents.translate(' ', string.punctuation)
         resume_text = resume_text.strip().lower().replace('<br>', ' ')
 
         print "\n\n\n PDF read SUCCESS"
@@ -548,11 +548,6 @@ def show_interviews():
 def render_tool(path):
     """Renders pair programming tool """
 
-    # if session.get('room'):
-    #     del session['room']
-    # session['room'] = path
-    # print "\n\n\nSESSION:", session['room']
-    # print "\n\n\nPATH:", path
     return render_template('test-tool.html')
 
 

@@ -4,21 +4,31 @@
   {% block morehead %}
     <style>
   body {
-    background-image: url('img/collage-2016-02-26.jpg');
+    background-image: url('img/homebackground.jpg');
     background-position: center;
     text-align: center;
     position: relative;
     width: 100%;
     background-size: cover;
+    text-align: bottom;
   }
   header {
     min-height: 100%;
+
+  }
+  h1 {
+    display:inline-block; 
+    background-color: white;
+  }
+  p {
+    display:inline-block; 
+    background-color: white;
   }
   </style>
   {% endblock %}
 {% block content %}
 <header>
-<h1>Welcome to HireBright</h1>
+<h1>Welcome to HireBright</h1><br>
 <p>Find your perfect Engineer</p>
 </header>
 {% endblock %}
