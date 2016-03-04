@@ -107,6 +107,7 @@ class TestSubmitForm(unittest.TestCase):
 
     def setUp(self):
         self.browser = webdriver.Firefox()
+        self.browser.set_window_size(1240,500)
 
     def test_submission_form(self):
         self.browser.get('http://localhost:5000')
