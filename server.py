@@ -307,7 +307,8 @@ def render_view_status():
         user = User.query.filter(User.email == email).first()
         if user:
             interview = Interview.query.filter(Interview.user_id==user.user_id).one()
-            return render_template("status.html", user=user, interview=interview)
+            time_of_submission = user.time_of_submission.strftime('%Y-%m-%d %H:%M:%S')
+            return render_template("status.html", user=user, interview=interview, time_of_submission=time_of_submission)
         else:
             flash("You are not logged in or logged in as a recruiter")
             return redirect("/")
@@ -345,7 +346,6 @@ def get_user_github_profile(user_login):
     try:
         req = urllib2.Request('https://api.github.com/users/'+user_login, None, {"Authorization": 'token '+os.environ['GITHUB_AUTH_TOKEN']})
         github_data = urllib2.urlopen(req).read()
-
         json_acceptable_string = github_data.replace("'", "\"")
 
         d = json.loads(json_acceptable_string)

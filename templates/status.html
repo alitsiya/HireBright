@@ -13,7 +13,7 @@
     <div class="row">
         <div class="col-xs-12 col-md-4">
             <h3>Profile</h3>
-            <table>
+            <table cellpadding="10">
                 <tr><td>First name:</td><td><div id="name">{{ user.first_name }}</div></td></tr>
                 <tr><td>Last Name:</td><td><div id='lname'>{{ user.last_name }}</div></td></tr>
                 <tr><td>Email:</td><td><div id='email'>{{ user.email }}</div></td></tr>
@@ -23,7 +23,7 @@
                 <tr><td>Salary:</td><td><div id="salary">${{ user.salary }}</div></td></tr>
                 <tr><td>Github:</td><td><div id='github'>{{ user.github }}</div></td></tr>
                 <tr><td>Desired position:</td><td><div id='position'>{{ user.position }}</div></td></tr>
-                <tr><td>Submission date:</td><td><div id='date'>{{ user.time_of_submission }}</div></td></tr>
+                <tr><td>Submission date:</td><td><div id='date'>{{ time_of_submission }}</div></td></tr>
                 <tr><td>Status: </td><td>{{ interview.status.status_name }}</td></tr>
                 {% if interview.interview_date %}
                 <tr><td>Interview Date: </td><td>{{ interview.interview_date }}</td></tr>
