@@ -486,7 +486,7 @@ def search():
     query = ''
     for i in range(len(search_query)):
         if i < len(search_query) - 1:
-            query = query + search_query[i] + ' &'
+            query = query + search_query[i] + ' | '
         else:
             query = query + search_query[i]
 
