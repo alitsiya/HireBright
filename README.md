@@ -1,5 +1,5 @@
 #Project Description
-**HireBright** is an app that helps to connect applicants with recruiters. As an applicant you can submit your application and txt or pdf of your resume and see your application status. As a recruiter you have access to data of all applicants, you can schedule and cancel interviews, search for applicants and see results ordered by relevancy, see your upcoming and past interviews, and see applicant GitHub profile and resume. It has a pair programming tool to solve code challenges remotely in real time. The app also sends an SMS when an interview is scheduled via Twilio API. Passwords stored encrypted using *bcrypt*.
+**HireBright** is an app that helps to connect applicants with recruiters. As an applicant you can submit your application and txt or pdf of your resume and see your application status. As a recruiter you have access to data of all applicants, you can schedule and cancel interviews, search for applicants and see results ordered by relevancy, see your upcoming and past interviews, and see applicant GitHub profile and resume. It has a pair programming tool to solve code challenges remotely in real time. The app also sends an SMS when an interview is scheduled via Twilio API. Passwords in database are encrypted using *Bcrypt*.
 
 #Setup
 ##Dependencies and Compatibility
@@ -67,11 +67,10 @@ As recruiter UI:
 
 
 #Tech Stack
-Python, Flask, Websockets, JavaScript, AJAX/JSON, HTML, CSS, SQLAlchemy, PostgreSQL Full Text Search, Bootstrap
+Python, Flask, Websockets, JavaScript, AJAX/JSON, SQL, SQLAlchemy, PostgreSQL Full Text Search, Bcrypt, Bootstrap, HTML, CSS
 
 #APIs Used
-Twilio API
-Github API
+Twilio API, Github API
 
 #Developer
 **Alitsiya Yusupova** lives in San Francisco, CA. Check out her profile on [LinkedIn](https://www.linkedin.com/in/alitsiyayusupova).
