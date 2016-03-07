@@ -52,9 +52,10 @@ You can generate your own data for applicants and recruiters. Also you can seed 
 
 #Usage
 App designed for two types of users: applicants and recruiters. 
-*To sign up as applicant you have to submit job application. After that you'll be redirected to "Your application" page. This page has interview status and link to remote pait programming tool if interview was scheduled. You can review you application and delete your profile from here. 
-*To sign up as recruiter use sign up page with a secret (for now it's a word 'secret'). You have access to all applicant profiles, you can schedule interview, access your upcomming interviews, search for candidates. 
++ To sign up as applicant you have to submit job application. After that you'll be redirected to "Your application" page. This page has interview status and link to remote pait programming tool if interview was scheduled. You can review you application and delete your profile from here. 
++ To sign up as recruiter use sign up page with a secret (for now it's a word 'secret'). You have access to all applicant profiles, you can schedule interview, access your upcomming interviews, search for candidates. 
 
+![](/readme-files/demo.gif)
 
 #Tech Stack
 Python, Flask, Websockets, JavaScript, AJAX/JSON, HTML, CSS, SQLAlchemy, PostgreSQL Full Text Search, Bootstrap
