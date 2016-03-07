@@ -57,13 +57,13 @@ App designed for two types of users: applicants and recruiters.
 
 ![](/readme-files/demo.gif)
 Applicant UI:
-![alt text][readme-files/application.png]
-![alt text][readme-files/status.png]
+![](readme-files/application.png)
+![](readme-files/status.png)
 As recruiter UI:
-![alt text][readme-files/applicants.png]
-![alt text][readme-files/search.png]
-![alt text][readme-files/interviews.png]
-![alt text][readme-files/profile.png]
+![](readme-files/applicants.png)
+![](readme-files/search.png)
+![](readme-files/interviews.png)
+![](readme-files/profile.png)
 
 
 #Tech Stack
