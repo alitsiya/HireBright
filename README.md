@@ -56,10 +56,15 @@ App designed for two types of users: applicants and recruiters.
 + To sign up as recruiter use sign up page with a secret (for now it's a word 'secret'). You have access to all applicant profiles, you can schedule interview, access your upcomming interviews, search for candidates. 
 
 ![](/readme-files/demo.gif)
+Applicant UI:
+![alt text][readme-files/application.png]
+![alt text][readme-files/status.png]
+As recruiter UI:
+![alt text][readme-files/applicants.png]
+![alt text][readme-files/search.png]
+![alt text][readme-files/interviews.png]
+![alt text][readme-files/profile.png]
 
-![alt text][/readme-files/application]
-![alt text][/readme-files/status]
-![alt text][/readme-files/search]
 
 #Tech Stack
 Python, Flask, Websockets, JavaScript, AJAX/JSON, HTML, CSS, SQLAlchemy, PostgreSQL Full Text Search, Bootstrap
