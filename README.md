@@ -57,6 +57,10 @@ App designed for two types of users: applicants and recruiters.
 
 ![](/readme-files/demo.gif)
 
+![alt text][/readme-files/application.PNG]
+![alt text][/readme-files/status.PNG]
+![alt text][/readme-files/search.PNG]
+
 #Tech Stack
 Python, Flask, Websockets, JavaScript, AJAX/JSON, HTML, CSS, SQLAlchemy, PostgreSQL Full Text Search, Bootstrap
 
