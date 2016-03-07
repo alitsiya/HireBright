@@ -219,7 +219,7 @@ def application_submit():
         file_contents = file_contents.replace('\n', '<br>')
 
         #resume type for search
-        resume_text = file_contents.translate(' ', string.punctuation)
+        resume_text = file_contents.translate(None, string.punctuation)
         resume_text = resume_text.strip().lower().replace('<br>', ' ')
 
         print "\n\n\n PDF read SUCCESS"

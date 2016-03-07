@@ -1,13 +1,31 @@
-{% extends 'base.html' %} {% block title %} Resume Data {% endblock %} {% block content %}
+{% extends 'base.html' %} {% block title %} Resume Data {% endblock %}
+{% block morehead %}
+<style>
+
+span.status-1 {
+    background-color: #B6FFCA;
+}
+span.status-3 {
+    background-color: #CAE8A2;
+}
+span.status-6 {
+    background-color: #E8AA4F;
+}
+span.status-7 {
+    background-color: #FF7B56;
+}
+</style>
+{% endblock %}
+{% block content %}
 <div class='container-fluid'>
     <h2>Resume Data</h2> {% if users %}
-    <ul>
+    <table>
         {% for user in users %}
-        <li>
-            <a href="/users/{{ user.user_id }}">{{ user.first_name }} {{ user.last_name }} </a> <span class="status-{{ user.interview[0].status_id }}">{{ user.interview[0].status.status_name }}</span>
-        </li>
+        <tr>
+            <td><a href="/users/{{ user.user_id }}">{{ user.first_name }} {{ user.last_name }} </a></td><td><span class="status-{{ user.interview[0].status_id }}">{{ user.interview[0].status.status_name }}</span></td>
+        </tr>
         {% endfor %}
-    </ul>
+    </table>
     {% endif %}
 </div>
 <!-- Hides side menu -->

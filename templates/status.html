@@ -13,7 +13,7 @@
     <div class="row">
         <div class="col-xs-12 col-md-4">
             <h3>Profile</h3>
-            <table cellpadding="10">
+            <table>
                 <tr><td>First name:</td><td><div id="name">{{ user.first_name }}</div></td></tr>
                 <tr><td>Last Name:</td><td><div id='lname'>{{ user.last_name }}</div></td></tr>
                 <tr><td>Email:</td><td><div id='email'>{{ user.email }}</div></td></tr>
@@ -24,7 +24,7 @@
                 <tr><td>Github:</td><td><div id='github'>{{ user.github }}</div></td></tr>
                 <tr><td>Desired position:</td><td><div id='position'>{{ user.position }}</div></td></tr>
                 <tr><td>Submission date:</td><td><div id='date'>{{ time_of_submission }}</div></td></tr>
-                <tr><td>Status: </td><td>{{ interview.status.status_name }}</td></tr>
+                <tr><td>Status: </td><td><span class="status-{{ user.interview[0].status_id }}">{{ interview.status.status_name }}</span></td></tr>
                 {% if interview.interview_date %}
                 <tr><td>Interview Date: </td><td>{{ interview.interview_date }}</td></tr>
                 {% endif %}
@@ -36,7 +36,7 @@
         </div>
         <div class="col-xs-12 col-md-8">
             <h3>Resume:</h3>
-            <br><div id="resume"></div>
+            <br><div id="resume" style="overflow:scroll; height:360px;"></div>
         </div>
         <form action="/delete-account" method="POST">
         <button>Delete account</button>

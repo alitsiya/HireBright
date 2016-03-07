@@ -7,7 +7,20 @@ html {
     height: 100%;
     margin: 0;
 }
+
 #flash {
   background-color: #FFFFCC;
 }
 
+.status-1 {
+    background-color: #B6FFCA;
+}
+.status-3 {
+    background-color: #CAE8A2;
+}
+.status-6 {
+    background-color: #E8AA4F;
+}
+.status-7 {
+    background-color: #FF7B56;
+}

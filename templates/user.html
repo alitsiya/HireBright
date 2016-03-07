@@ -62,7 +62,7 @@
                 <tr>
                     <td>Status: </td>
                     <td>
-                        <div id='status'> {{ interview.status.status_name }}</div>
+                        <div id='status' class="status-{{ user.interview[0].status_id }}"> {{ interview.status.status_name }}</div>
                     </td>
                 </tr>
             </table>
@@ -186,7 +186,7 @@
         <div class="col-xs-12 col-md-8">
             <h3>Resume:</h3>
             <br>
-            <div id="resume"></div>
+            <div id="resume" style="overflow:scroll; height:600px;"></div>
         </div>
     </div>
     {% endif %}
