@@ -61,6 +61,9 @@ Applicant UI:
 ![](readme-files/status.png)
 As recruiter UI:
 ![](readme-files/applicants.png)
+Search implemented using PostgreSQL Full Text Search. On every search query row of resume strings converted to a sorted list of distinct lexemes. Query also converts to lexem, so when searching for 'developer' as the result you'll also get all forms of that word. Search form supports more than one search term. It handles multiply terms by searching 'term1 OR term2 OR' etc. 
+Relevancy is another PostgreSQL build-in method. The more lexems are in document the higher rank will be. 
+PostgreSQL allows to get document snippets with keyword highlighted. In HireBright it specified that snippet has no more than three chunks with maximum 30 words in each.
 ![](readme-files/search.png)
 ![](readme-files/interviews.png)
 ![](readme-files/profile.png)
