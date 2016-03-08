@@ -1,4 +1,14 @@
-{% extends 'base.html' %} {% block title %} Candidate profile {% endblock %} {% block content %} {% if user %}
+{% extends 'base.html' %} {% block title %} Candidate profile {% endblock %} 
+{% block morehead %}
+<!-- <link type="text/css" rel="Stylesheet"
+href="http://ajax.microsoft.com/ajax/jquery.ui/1.8.6/themes/
+smoothness/jquery-ui.css" /> -->
+<link type="text/css" rel="Stylesheet"
+href="/datepicker-css/jquery-ui.css" />
+
+{% endblock %} 
+{% block content %} 
+{% if user %}
 <div class='container-fluid'>
     <div class="row">
         <div class="col-xs-12 col-md-4">
@@ -105,7 +115,7 @@
                         <tr>
                             <td>Date</td>
                             <td>
-                                <input type="text" id="calendar" /> </td>
+                                <input type="text" id="calendar" style="background-color: white"/> </td>
                         </tr>
                         <tr>
                             <td>Time:</td>
