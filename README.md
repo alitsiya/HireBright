@@ -42,10 +42,12 @@ To run the app from the command line of the terminal, run
 In a browser window, type localhost:5000 to access the home page
 
 ##Testing
+There is tests.py file that cover some percentage of model.py and server.py code.
 For testing use command line:
 ` coverage run tests.py `
 For report: 
 ` coverage report -m server.py `
+Also this will run Selenium script that will automaticlly run Firefox and fill out applcation page.
 
 #Data
 You can generate your own data for applicants and recruiters. Also you can seed database.sql file into database `psql interviewer < database.sql` .  
@@ -67,6 +69,8 @@ PostgreSQL allows to get document snippets with keyword highlighted. In HireBrig
 ![](readme-files/search.png)
 ![](readme-files/interviews.png)
 ![](readme-files/profile.png)
+App also has fully functional mobile version.
+![](readme-files/mob.png)
 
 
 #Tech Stack
