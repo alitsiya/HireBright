@@ -563,7 +563,9 @@ if __name__ == "__main__":
     connect_to_db(app)
 
     # app.run()
+    PORT = int(os.environ.get("PORT", 5000))
 
+    # app.run(debug=True, host="0.0.0.0", port=PORT)
     print 'Listening on http://localhost:5000'
     app.debug = True
     import os
@@ -572,6 +574,6 @@ if __name__ == "__main__":
         '/': os.path.join(os.path.dirname(__file__), 'static')
         })
     from socketio.server import SocketIOServer
-    SocketIOServer(('0.0.0.0', 5000), app,
+    SocketIOServer(('0.0.0.0', PORT), app,
         resource="socket.io", policy_server=False).serve_forever()
 
