@@ -574,6 +574,6 @@ if __name__ == "__main__":
         '/': os.path.join(os.path.dirname(__file__), 'static')
         })
     from socketio.server import SocketIOServer
-    SocketIOServer(('0.0.0.0', port=PORT), app,
+    SocketIOServer(('0.0.0.0', PORT), app,
         resource="socket.io", policy_server=False).serve_forever()
 
