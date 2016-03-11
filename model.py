@@ -124,7 +124,7 @@ class Interview(db.Model):
 
 
 
-def connect_to_db(app):
+def connect_to_db(app, db_uri=None):
     """Connect the database to our Flask app."""
 
     app.config['SQLALCHEMY_DATABASE_URI'] = db_uri or 'postgresql:///interviewer'
