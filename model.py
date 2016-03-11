@@ -127,11 +127,10 @@ class Interview(db.Model):
 def connect_to_db(app):
     """Connect the database to our Flask app."""
 
-    # Configure to use our SQLite database
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres:///interviewer'
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri or 'postgresql:///interviewer'
     app.config['SQLALCHEMY_ECHO'] = True
-    db.app = app
     db.init_app(app)
+    db.app = app
 
 
 if __name__ == "__main__":
