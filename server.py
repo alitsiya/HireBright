@@ -559,7 +559,7 @@ if __name__ == "__main__":
     # that we invoke the DebugToolbarExtension
     # app.debug = True
     DebugToolbarExtension(app)
-
+    db.create_all()
     connect_to_db(app, os.environ.get("DATABASE_URL"))
 
     # app.run()
